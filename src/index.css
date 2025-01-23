@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+.item-image {
+  transition: transform 0.3s ease;
+}
+
+.item-image:hover {
+  transform: scale(1.1); /* Adjust the scale as needed */
+}
+
+.modal {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.close-button {
+  position: absolute;
+  top: 20px; /* Adjust as needed */
+  right: 20px; /* Adjust as needed */
+  color: white; /* Color of the close button */
+  background: rgba(155, 29, 29, 0.5); /* Semi-transparent background */
+  border: none; /* No border */
+  border-radius: 50%; /* Circular button */
+  width: 40px; /* Width of the button */
+  height: 40px; /* Height of the button */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background 0.5s; /* Smooth background transition */
+}
+
+.close-button:hover {
+  background: rgba(110, 27, 27, 0.7); /* Change background on hover */
+}
+
+.full-image {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.testimonials-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.testimonials-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.testimonials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.testimonial-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-text {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.testimonial-author {
+  text-align: right;
+  font-weight: bold;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  cursor: pointer;
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+main {
+  padding-top: 100px;
+}
+
+.landing-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-page > div {
+  flex: 1;
+}
+header {
+  margin-bottom: 5rem;
+  /* position: fixed; */
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    text-align: right;
+  }
+  .container {  
+    padding: 0 2rem;
+    margin-bottom:20px;
+  }
+  nav ul li {
+    margin-bottom: 0.2rem;
+  }
+  nav ul li:last-child {
+    margin-bottom: 0;
+  }
+  .carTextContainer {
+    margin-top: 10rem;
+  }
+  .carContainer{
+    margin-top: 0px;
+  }
+  .carText{
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .prints-page{
+    margin-top: 20px;
+  }
+}
+.whatsapp-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease; /* Only transform on hover */
+  overflow: hidden;
+  padding: 10px; /* Padding for better spacing */
+}
+
+.whatsapp-icon {
+  font-size: 24px; /* Adjust size as needed */
+  transition: transform 0.3s ease;
+}
+
+.whatsapp-text {
+  margin-left: 8px;
+  opacity: 0; /* Initially hidden */
+  width: auto; /* Allow text to expand */
+  transition: opacity 0.3s ease, background-color 0.3s ease; /* Only opacity and background on hover */
+  background-color: #25D366; /* WhatsApp green color */
+  color: white; /* Text color */
+  border-radius: 5px; /* Rounded corners */
+  padding: 5px; /* Padding for text background */
+  visibility: hidden; /* Initially hidden */
+}
+
+.whatsapp-button:hover .whatsapp-icon {
+  transform: scale(1.2); /* Scale the icon on hover */
+}
+
+.whatsapp-button:hover .whatsapp-text {
+  opacity: 1; /* Fade in the text on hover */
+  visibility: visible; /* Show text background on hover */
+}
+
+.hero {
+  /* min-height: 100vh; Ensure the hero section takes up the full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+}
+
+
