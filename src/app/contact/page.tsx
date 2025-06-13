@@ -6,13 +6,13 @@ export default function Contact() {
   const socialLinks = [
     {
       name: 'WhatsApp',
-      url: 'https://wa.me/+2348166411702',
+      url: 'https://wa.me/+2347019976637',
       icon: <FaWhatsapp className="w-8 h-8" />,
       color: 'bg-[#25D366] hover:bg-[#128C7E]'
     },
     {
       name: 'Instagram',
-      url: 'https://instagram.com/herde_enterprise',
+      url: 'https://instagram.com/graphics2prints',
       icon: <FaInstagram className="w-8 h-8" />,
       color: 'bg-[#E4405F] hover:bg-[#D93C50]'
     },
@@ -104,7 +104,7 @@ export default function Contact() {
   </div>
                     <p className="flex items-center">
                       <span className="font-semibold mr-2">Email:</span>
-                      just4prints1@gmail.com 
+                      graphics2prints@gmail.com 
                     </p>
                     <p className="flex items-center">
                       <span className="font-semibold mr-2">Phone:</span>
