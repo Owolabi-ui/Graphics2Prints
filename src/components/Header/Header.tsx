@@ -93,7 +93,7 @@ const Header = () => {
   Prints
 </Link>
 <Link 
-  href="/web-solutions"
+  href="/gift-items"
   className="px-3 py-2 rounded-md text-white text-sm whitespace-nowrap transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
   onClick={() => setIsMenuOpen(false)}
 >

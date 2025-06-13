@@ -11,6 +11,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import Link from "next/link";
 import { Navigation, Pagination, Scrollbar, Autoplay } from "swiper/modules";
 
 interface Product {
@@ -117,9 +118,12 @@ export default function Home() {
               From business cards to posters to custom gift items, we've got you
               covered.
             </p>
-            <button className="bg-gradient-to-r from-[#000000] to-[#000000] text-white px-4 py-2 rounded-md hover:bg-gradient-to-r hover:from-[#73483D] hover:to-[#a45e4d] transition duration-300 ease-in-out transform hover:scale-110">
-              Learn More
-            </button>
+            <Link
+  href="/prints"
+  className="bg-gradient-to-r from-[#000000] to-[#000000] text-white px-4 py-2 rounded-md hover:bg-gradient-to-r hover:from-[#73483D] hover:to-[#ED3237] transition duration-300 ease-in-out transform hover:scale-110 inline-block"
+>
+  Learn More
+</Link>
           </div>
 
           {/* Carousel Section */}
@@ -158,24 +162,44 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Web Solutions Section */}
-        <section className="hero bg-[#73483D] text-white py-20 mt-20 mb-20">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-4xl font-bold mb-4">
-              Experience Swift Web Solutions
-            </h1>
-            <p className="text-xl mb-8 max-w-3xl mx-auto">
-              One Page Websites | E-commerce Websites | Custom Web Applications
-              | API Integrations | Website Maintenance
-            </p>
-            <a
-              href="#services"
-              className="inline-block bg-white text-black px-6 py-3 rounded-md hover:bg-gradient-to-r hover:from-[#73483D] hover:to-[#a45e4d] hover:text-white transition duration-300 ease-in-out transform hover:scale-110"
-            >
-              Learn More
-            </a>
-          </div>
-        </section>
+       {/* Gift Items Section */}
+<section className="relative py-20 mt-20 mb-20 overflow-hidden bg-gradient-to-br from-[#000000] via-[#2d2d2d] to-[#73483D]">
+  {/* Decorative SVG background */}
+  <svg
+    className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
+    viewBox="0 0 1440 320"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="none"
+  >
+    <path
+      fill="#ED3237"
+      fillOpacity="0.3"
+      d="M0,160L60,170.7C120,181,240,203,360,197.3C480,192,600,160,720,133.3C840,107,960,85,1080,101.3C1200,117,1320,171,1380,197.3L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+    />
+  </svg>
+  <div className="relative container mx-auto px-6 text-center z-10">
+    
+    <h1 className="text-4xl text-white md:text-5xl font-extrabold mb-4 bg-clip-text drop-shadow-lg">
+      Beautifully Crafted Gift Items
+    </h1>
+    <p className="text-xl mb-8 max-w-3xl mx-auto text-white/90">
+      At <span className="font-bold text-[#ED3237]">Graphics2Prints</span>, we specialize in creating stunning gift items
+      that leave a lasting impression. Whether it's for a special
+      occasion or a corporate event, our custom designs and high-quality
+      materials ensure your gifts stand out.
+    </p>
+   <Link
+  href="/gift-items"
+  className="inline-flex items-center gap-2 bg-white text-black px-8 py-3 rounded-md font-semibold shadow-lg hover:bg-gradient-to-r hover:from-[#73483D] hover:to-[#ED3237] hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
+>
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+  </svg>
+  Learn More
+</Link>
+  </div>
+</section>
 
         {/* Popular Products Section */}
         <section className="py-15 bg-white dark:bg-gray-900 mb-20">

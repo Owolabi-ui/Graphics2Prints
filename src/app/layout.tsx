@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 // Metadata configuration
 export const metadata: Metadata = {
   title: "Graphics2Prints",
-  description: "Printing, Web Development, Graphic Design, Gift items and more",
+  description: "Printing, Branding, Graphic Design, Gift items and more",
   keywords:
-    "Herde Enterprises, Printing, Web Development, Graphic Design, Gift items",
+    "Graphics2Prints, Printing, Branding, Graphic Design, Gift items",
 };
 
 export default function RootLayout({
