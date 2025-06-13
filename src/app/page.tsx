@@ -179,7 +179,7 @@ export default function Home() {
     </h1>
     <p className="text-xl mb-8 max-w-3xl mx-auto text-white/90">
       At <span className="font-bold text-[#ED3237]">Graphics2Prints</span>, we specialize in creating stunning gift items
-      that leave a lasting impression. Whether it's for a special
+      that leave a lasting impression. Whether it&apos;s for a special
       occasion or a corporate event, our custom designs and high-quality
       materials ensure your gifts stand out.
     </p>
