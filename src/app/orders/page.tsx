@@ -4,6 +4,7 @@ import PageTransition from '@/components/PageTransition/PageTransition'
 import { toast } from 'react-toastify'
 import AuthGuard from '@/components/auth/AuthGuard'
 import type { CartItem } from '@/types/cart'
+import type { Session } from "next-auth"
 
 interface Order {
   id: string
@@ -16,7 +17,7 @@ interface Order {
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [session, setSession] = useState<any>(null)
+  const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
     if (!session) return;

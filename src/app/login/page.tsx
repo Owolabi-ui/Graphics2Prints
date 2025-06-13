@@ -1,6 +1,5 @@
 "use client"
 import { signIn } from "next-auth/react"
-import { useSearchParams } from "next/navigation"
 import PageTransition from "@/components/PageTransition/PageTransition"
 import { toast } from "react-toastify"
 import Link from "next/link"

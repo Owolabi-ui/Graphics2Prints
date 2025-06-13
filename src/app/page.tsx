@@ -434,7 +434,7 @@ export default function Home() {
 
                   <div className="flex gap-4">
                     <a
-                      href={`https://wa.me/+2348166411702?text=I&apos;m%20interested%20in%20${selectedProduct.name}`}
+                      href={`https://wa.me/+2348166411702?text=I%27m%20interested%20in%20${selectedProduct.name}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#73483D] transition-colors"
