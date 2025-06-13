@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import PageTransition from "@/components/PageTransition/PageTransition";
 import "react-toastify/dist/ReactToastify.css";
 import { Product, CartItem } from "@/types/cart";
+import Image from "next/image";
 
 export default function GiftItems() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,12 +18,10 @@ export default function GiftItems() {
   const [quantity, setQuantity] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
   const [pricePerPiece, setPricePerPiece] = useState<number>(0);
-  const items = useCartStore((state) => state.items);
 
-  // Calculate cart total (if needed)
-  const calculateCartTotal = (items: CartItem[]): number => {
-    return items.reduce((sum, item) => sum + item.amount * item.quantity, 0);
-  };
+ 
+
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -121,10 +120,11 @@ export default function GiftItems() {
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
             >
               <div className="relative w-full h-80">
-                <img
+                <Image
                   src={product.image_url || "/images/placeholder.jpg"}
                   alt={product.image_alt_text}
-                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                  fill
+                  className="object-cover transform hover:scale-110 transition-transform duration-300"
                 />
               </div>
               <div className="p-6 flex flex-col flex-grow">
@@ -200,11 +200,13 @@ export default function GiftItems() {
               </button>
 
               <div className="mt-8">
-                <img
-                  src={selectedProduct.image_url}
-                  alt={selectedProduct.image_alt_text}
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
-                />
+              <Image
+  src={selectedProduct.image_url || "/images/placeholder.jpg"}
+  alt={selectedProduct.image_alt_text}
+  width={400}
+  height={320}
+  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+  />
                 <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                   {selectedProduct.name}
                 </h2>

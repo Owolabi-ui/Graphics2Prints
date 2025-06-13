@@ -1,11 +1,12 @@
 import { create } from 'zustand'
+import type { User } from '@/types/auth'
 
 interface AuthState {
   token: string | null
-  user: any | null
+  user: User | null
   isAuthenticated: boolean
   setToken: (token: string) => void
-  setUser: (user: any) => void
+  setUser: (user: User) => void
   logout: () => void
 }
 

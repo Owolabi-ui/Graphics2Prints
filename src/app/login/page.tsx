@@ -1,16 +1,14 @@
 "use client"
 import { signIn } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import PageTransition from "@/components/PageTransition/PageTransition"
 import { toast } from "react-toastify"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useState } from "react"
 
-export default function Login() {
-  const router = useRouter()
+export default function Login() { 
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
   const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleSignIn = async () => {
@@ -46,7 +44,7 @@ export default function Login() {
               Welcome Back!!!
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link 
                 href="/register" 
                 className="text-[#73483D] hover:text-black transition-colors duration-200"

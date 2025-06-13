@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
 import PageTransition from '@/components/PageTransition/PageTransition'
 
 // Define PaystackPop type at module level
@@ -159,10 +160,12 @@ export default function Cart() {
 
               return (
                 <div key={item.id} className="flex gap-4 border-b pb-4 dark:border-gray-700">
-                  <img 
+                  <Image 
                     src={item.image_url || '/images/placeholder.jpg'} 
                     alt={item.name}
-                    className="w-24 h-24 object-cover rounded"
+                    width={96}
+                    height={96}
+                    className="object-cover rounded"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 dark:text-white">{item.name}</h3>

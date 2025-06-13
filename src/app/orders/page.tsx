@@ -1,13 +1,13 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import PageTransition from '@/components/PageTransition/PageTransition'
 import { toast } from 'react-toastify'
 import AuthGuard from '@/components/auth/AuthGuard'
+import type { CartItem } from '@/types/cart'
 
 interface Order {
   id: string
-  items: any[]
+  items: CartItem[];
   total: number
   status: string
   createdAt: string
@@ -16,32 +16,31 @@ interface Order {
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
 
-  return (
-    <AuthGuard>
-      {(session) => {
+
+        return (
+          <AuthGuard>
+     {(session) => {
         useEffect(() => {
+          if (!session) return;
           const fetchOrders = async () => {
             try {
-              // If you need to send a token, use session?.accessToken or session?.user?.email, etc.
-              const response = await fetch('/api/orders', {
-                // headers: { Authorization: `Bearer ${session?.accessToken}` }
-              })
-              if (!response.ok) throw new Error('Failed to fetch orders')
-              const data = await response.json()
-              setOrders(data)
+              const response = await fetch('/api/orders');
+              if (!response.ok) throw new Error('Failed to fetch orders');
+              const data = await response.json();
+              setOrders(data);
             } catch (error) {
-              toast.error('Failed to load orders')
+              toast.error('Failed to load orders');
+              console.error(error);
+              // handle error
             } finally {
-              setIsLoading(false)
+              setIsLoading(false);
             }
-          }
-          fetchOrders()
-        }, [session])
+          };
+          fetchOrders();
+        }, [session]);
 
-        if (isLoading) return <div>Loading...</div>
-
+        if (isLoading) return <div>Loading...</div>;    
         return (
           <PageTransition>
             <div className="container mx-auto px-6 py-24">

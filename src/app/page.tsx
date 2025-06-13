@@ -35,7 +35,6 @@ export default function Home() {
   const addToCart = useCartStore((state) => state.addItem);
   const [loading, setLoading] = useState(true);
   const [pricePerPiece, setPricePerPiece] = useState<number>(0);
-  const { items, removeItem, updateQuantity } = useCartStore();
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -48,11 +47,6 @@ export default function Home() {
       toast.error(`Minimum order is ${selectedProduct.minimum_order} pieces`);
       return;
     }
-
-    const productWithQuantity = {
-      ...selectedProduct,
-      quantity: quantity, // Make sure quantity is included
-    };
 
     addToCart(selectedProduct, quantity);
     toast.success("Added to cart");
@@ -72,15 +66,6 @@ export default function Home() {
       const newPrice = pricePerPiece * newQuantity;
       setCalculatedPrice(newPrice);
     }
-  };
-
-  const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product);
-    setQuantity(product.minimum_order);
-    const pricePerItem = product.amount / product.minimum_order;
-    setPricePerPiece(pricePerItem);
-    setCalculatedPrice(product.amount);
-    setIsSidebarOpen(true);
   };
 
   useEffect(() => {
@@ -138,24 +123,32 @@ export default function Home() {
             >
               {/* ...Swiper slides... */}
               <SwiperSlide>
-                <img
+                <Image
                   src="/images/image3.png"
                   alt="Slide 1"
-                  className="w-full h-full object-cover rounded-lg"
+                  width={900}
+                  height={500}
+                  className="object-cover rounded-lg"
                 />
               </SwiperSlide>
               <SwiperSlide>
-                <img
+                <Image
+                 
                   src="/images/image1.png"
                   alt="Slide 2"
-                  className="w-full h-full object-cover rounded-lg"
+                  width={700}
+                  height={500}
+                  className="object-cover rounded-lg"
                 />
               </SwiperSlide>
               <SwiperSlide>
-                <img
+                <Image
+                 
                   src="/images/image2.png"
                   alt="Slide 3"
-                  className="w-full h-full object-cover rounded-lg"
+                  width={700}
+                  height={500}
+                  className="object-cover rounded-lg"
                 />
               </SwiperSlide>
             </Swiper>
@@ -233,11 +226,13 @@ export default function Home() {
                   key={product.id}
                   className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[450px] flex flex-col"
                 >
-                  <div className="relative w-full h-80">
-                    <img
-                      src={product.image_url}
+                  <div className="relative w-full h-60">
+                    <Image
+                       src={product.image_url}
                       alt={product.image_alt_text}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                      fill
+                      className="object-cover transform hover:scale-110 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, 400px"
                     />
                   </div>
                   <div className="p-6 flex flex-col flex-grow">
@@ -308,10 +303,12 @@ export default function Home() {
               </button>
 
               <div className="mt-8">
-                <img
+                <Image
+                  width={700}
+                  height={500}
                   src={selectedProduct.image_url}
                   alt={selectedProduct.image_alt_text}
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  className="object-cover rounded-lg shadow-lg"
                 />
                 <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                   {selectedProduct.name}
@@ -436,7 +433,7 @@ export default function Home() {
 
                   <div className="flex gap-4">
                     <a
-                      href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}`}
+                      href={`https://wa.me/+2348166411702?text=I&apos;m%20interested%20in%20${selectedProduct.name}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#73483D] transition-colors"
@@ -466,10 +463,12 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <div className="flex items-center mb-4">
-                  <img
+                  <Image
                     src="/images/avatar1.jpg"
                     alt="Client"
-                    className="w-12 h-12 rounded-full mr-4"
+                    width={48}
+                    height={48}
+                    className="rounded-full mr-4"
                   />
                   <div>
                     <h3 className="font-bold text-black">John Doe</h3>
@@ -477,17 +476,19 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Exceptional service! The team delivered our website ahead of
-                  schedule and exceeded our expectations."
+                  &quot;Exceptional service! The team delivered our website ahead of
+                  schedule and exceeded our expectations.&quot;
                 </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <div className="flex items-center mb-4">
-                  <img
+                  <Image
                     src="/images/avatar2.jpg"
                     alt="Client"
-                    className="w-12 h-12 rounded-full mr-4"
+                    width={48}
+                    height={48}  
+                    className="rounded-full mr-4"
                   />
                   <div>
                     <h3 className="font-bold text-black">Jane Smith</h3>
@@ -495,17 +496,19 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 text-black">
-                  "The print quality is outstanding. Their attention to detail
-                  sets them apart from others."
+                  &quot;The print quality is outstanding. Their attention to detail
+                  sets them apart from others.&quot;
                 </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <div className="flex items-center mb-4">
-                  <img
+                  <Image
                     src="/images/avatar3.jpg"
                     alt="Client"
-                    className="w-12 h-12 rounded-full mr-4"
+                    width={48}
+                    height={48}
+                    className="rounded-full mr-4"
                   />
                   <div>
                     <h3 className="font-bold text-black">Mike Johnson</h3>
@@ -513,8 +516,8 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "From business cards to banners, they handle everything with
-                  professionalism and quality."
+                  &quot;From business cards to banners, they handle everything with
+                  professionalism and quality.&quot;
                 </p>
               </div>
             </div>

@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
+import type { CartItem } from '@/types/cart'
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { email, totalAmount, items } = body
+    const { email, totalAmount, items } = body as {
+      email: string
+      totalAmount: number
+      items: CartItem[]
+    }
 
     // Format data according to Paystack docs
     const response = await fetch('https://api.paystack.co/transaction/initialize', {
@@ -19,7 +24,7 @@ export async function POST(req: Request) {
         currency: 'NGN',
         channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
         metadata: {
-          order_details: items.map((item: any) => ({
+          order_details: items.map((item: CartItem) => ({
             product_id: item.id,
             product_name: item.name,
             quantity: item.quantity,

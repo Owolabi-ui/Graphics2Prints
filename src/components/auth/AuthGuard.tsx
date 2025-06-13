@@ -1,11 +1,12 @@
 "use client"
 import { useSession } from "next-auth/react"
+import { Session } from "next-auth"
 import { useRouter } from "next/navigation"
 import PageTransition from "@/components/PageTransition/PageTransition"
 import { motion } from "framer-motion"
 
 interface AuthGuardProps {
-  children: (session: any) => React.ReactNode
+  children: (session: Session | null) => React.ReactNode
   }
 
 function AuthGuard({ children }: AuthGuardProps) {
@@ -15,7 +16,7 @@ const { data: session, status } = useSession({
     onUnauthenticated() {
       router.push('/login')
     }
-  })
+  });
 
   if (status === "loading") {
     return (
@@ -35,4 +36,4 @@ const { data: session, status } = useSession({
   return <>{children(session)}</>
 }
 
-export default AuthGuard
+export default AuthGuard;

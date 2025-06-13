@@ -16,24 +16,9 @@ export default function Register(): JSX.Element {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsGoogleLoading(true);
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: true,
-      });
-    } catch (error) {
-      toast.error("Google sign in failed");
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -63,7 +48,7 @@ export default function Register(): JSX.Element {
 
       toast.success("Registration successful");
       router.push("/login");
-    } catch (error) {
+    } catch {
       toast.error("Registration failed");
     } finally {
       setIsLoading(false);

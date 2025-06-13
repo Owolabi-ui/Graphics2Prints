@@ -1,19 +1,11 @@
 "use client"
-import { Route } from 'next'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
-interface FooterItem {
-  href: string
-  name: string
-}
 
-interface FooterNav {
-  label: string
-  items: FooterItem[]
-}
 
-const Footer = () => { 
+  const Footer = () => { 
   const [currentYear, setCurrentYear] = useState("2024")
 
   useEffect(() => {
@@ -24,7 +16,15 @@ const Footer = () => {
     <footer className="bg-[#E5E4E2] px-4 py-8 max-w-screen-xxl mx-auto md:px-8 transition-all duration-300">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-8">
         <div className="flex flex-col items-start gap-1">
-          <img src="/images/g2p_logo.png" className="w-12" alt="Logo" />
+          <Image
+           src="/images/g2p_logo.png"
+            width={48}
+            height={48} 
+           className="w-12" 
+           alt="Logo"
+           priority
+           />
+           
            <p className="text-gray-600 text-sm font-semibold ">
             Graphics2Prints
           </p>

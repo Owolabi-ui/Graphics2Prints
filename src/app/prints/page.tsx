@@ -5,7 +5,8 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 import PageTransition from "@/components/PageTransition/PageTransition";
 import "react-toastify/dist/ReactToastify.css";
-import { Product, CartItem } from "@/types/cart";
+import { Product } from "@/types/cart";
+import Image from "next/image";
 
 export default function Prints() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,12 +20,7 @@ export default function Prints() {
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
   const [pricePerPiece, setPricePerPiece] = useState<number>(0);
   const items = useCartStore((state) => state.items);
-  const [cartTotal, setCartTotal] = useState<number>(0);
-
-  const calculateCartTotal = (items: CartItem[]): number => {
-    return items.reduce((sum, item) => sum + item.amount * item.quantity, 0);
-  };
-
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -39,8 +35,7 @@ export default function Prints() {
     };
 
     fetchProducts();
-    setCartTotal(calculateCartTotal(items));
-  }, [items]);
+      }, [items]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -52,12 +47,7 @@ export default function Prints() {
       return;
     }
 
-    const productWithQuantity = {
-      ...selectedProduct,
-      quantity: quantity, // Make sure quantity is included
-    };
-
-    addToCart(selectedProduct, quantity);
+     addToCart(selectedProduct, quantity);
     toast.success("Added to cart");
     setIsSidebarOpen(false);
   };
@@ -175,18 +165,30 @@ export default function Prints() {
           </div>
         </div>
 
-        {/* Products Grid - Update to use filteredProducts */}
-        <div className="dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-8">
-          {filteredProducts.map((product) => (
+        {/* Products Grid */}
+{filteredProducts.length === 0 ? (
+  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+    <div>No products found matching your criteria</div>
+    {/* Suggest a few products */}
+    <div className="mt-10">
+      <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">You might also like</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {[...products]
+          .filter((p) => p) // filter out undefined products
+          .sort(() => 0.5 - Math.random()) // randomize order
+          .slice(0, 8) // take only 8 products
+          .map((product) => (
             <div
               key={product.id}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
             >
               <div className="relative w-full h-80">
-                <img
+                <Image
                   src={product.image_url || "/images/placeholder.jpg"}
                   alt={product.image_alt_text}
+                  fill
                   className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
               </div>
               <div className="p-6 flex flex-col flex-grow">
@@ -213,52 +215,51 @@ export default function Prints() {
               </div>
             </div>
           ))}
+      </div>
+    </div>
+  </div>
+) : (
+  <div className="dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-8">
+    {filteredProducts.map((product) => (
+      <div
+        key={product.id}
+        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
+      >
+        <div className="relative w-full h-80">
+          <Image
+            src={product.image_url || "/images/placeholder.jpg"}
+            alt={product.image_alt_text}
+            fill
+            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, 400px"
+          />
         </div>
-
-        {/* Show message if no results */}
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            No products found matching your criteria
-          </div>
-        )}
-        <div className="dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-8">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
-            >
-              <div className="relative w-full h-80">
-                <img
-                  src={product.image_url || "/images/placeholder.jpg"}
-                  alt={product.image_alt_text}
-                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                  {product.description}
-                </p>
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setQuantity(product.minimum_order);
-                    const pricePerPiece =
-                      product.amount / product.minimum_order;
-                    setCalculatedPrice(product.amount);
-                    setPricePerPiece(pricePerPiece);
-                    setIsSidebarOpen(true);
-                  }}
-                  className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#73483D] transition-colors mt-auto"
-                >
-                  See More
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="p-6 flex flex-col flex-grow">
+          <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
+            {product.name}
+          </h3>
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+            {product.description}
+          </p>
+          <button
+            onClick={() => {
+              setSelectedProduct(product);
+              setQuantity(product.minimum_order);
+              const pricePerPiece =
+                product.amount / product.minimum_order;
+              setCalculatedPrice(product.amount);
+              setPricePerPiece(pricePerPiece);
+              setIsSidebarOpen(true);
+            }}
+            className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#73483D] transition-colors mt-auto"
+          >
+            See More
+          </button>
         </div>
+      </div>
+    ))}
+  </div>
+)}
 
         {/* Sidebar Overlay */}
         {isSidebarOpen && (
@@ -300,7 +301,9 @@ export default function Prints() {
               </button>
 
               <div className="mt-8">
-                <img
+                <Image
+                width={700}
+                height={500}
                   src={selectedProduct.image_url}
                   alt={selectedProduct.image_alt_text}
                   className="w-full h-full object-cover rounded-lg shadow-lg"

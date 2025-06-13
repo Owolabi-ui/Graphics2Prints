@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Product, CartItem, CartStore } from '@/types/cart'
+import { CartStore } from '@/types/cart'
 import { isProduct, isValidQuantity } from '../utils/guards/cartGuards'
 
 
