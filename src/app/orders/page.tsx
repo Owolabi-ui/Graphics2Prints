@@ -16,31 +16,31 @@ interface Order {
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [session, setSession] = useState<any>(null)
 
+  useEffect(() => {
+    if (!session) return;
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('/api/orders');
+        if (!response.ok) throw new Error('Failed to fetch orders');
+        const data = await response.json();
+        setOrders(data);
+      } catch (error) {
+        toast.error('Failed to load orders');
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOrders();
+  }, [session]);
 
         return (
-          <AuthGuard>
-     {(session) => {
-        useEffect(() => {
-          if (!session) return;
-          const fetchOrders = async () => {
-            try {
-              const response = await fetch('/api/orders');
-              if (!response.ok) throw new Error('Failed to fetch orders');
-              const data = await response.json();
-              setOrders(data);
-            } catch (error) {
-              toast.error('Failed to load orders');
-              console.error(error);
-              // handle error
-            } finally {
-              setIsLoading(false);
-            }
-          };
-          fetchOrders();
-        }, [session]);
-
-        if (isLoading) return <div>Loading...</div>;    
+         <AuthGuard>
+      {(sess) => {
+        if (!session && sess) setSession(sess);
+        if (isLoading) return <div>Loading...</div>;  
         return (
           <PageTransition>
             <div className="container mx-auto px-6 py-24">

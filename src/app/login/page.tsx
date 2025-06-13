@@ -8,8 +8,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 
 export default function Login() { 
-  const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(false)
+const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleSignIn = async () => {
     try {
@@ -44,7 +43,7 @@ export default function Login() {
               Welcome Back!!!
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link 
                 href="/register" 
                 className="text-[#73483D] hover:text-black transition-colors duration-200"

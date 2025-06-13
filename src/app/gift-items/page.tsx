@@ -5,7 +5,7 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 import PageTransition from "@/components/PageTransition/PageTransition";
 import "react-toastify/dist/ReactToastify.css";
-import { Product, CartItem } from "@/types/cart";
+import { Product } from "@/types/cart";
 import Image from "next/image";
 
 export default function GiftItems() {

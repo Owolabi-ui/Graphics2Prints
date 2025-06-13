@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import PageTransition from "@/components/PageTransition/PageTransition";
 import Link from "next/link";
 import { toast } from "react-toastify";

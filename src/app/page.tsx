@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PageTransition from "@/components/PageTransition/PageTransition";
@@ -60,13 +60,7 @@ export default function Home() {
       useGrouping: true,
     }).format(price);
   };
-  const handleQuantityChange = (newQuantity: number) => {
-    if (selectedProduct && newQuantity >= selectedProduct.minimum_order) {
-      setQuantity(newQuantity);
-      const newPrice = pricePerPiece * newQuantity;
-      setCalculatedPrice(newPrice);
-    }
-  };
+ 
 
   useEffect(() => {
     async function fetchProducts() {
@@ -100,7 +94,7 @@ export default function Home() {
             </h2>
             <p className="text-lg mb-3">
               We offer high-quality printing services tailored to your needs.
-              From business cards to posters to custom gift items, we've got you
+              From business cards to posters to custom gift items, we&apos;ve got you
               covered.
             </p>
             <Link
@@ -123,34 +117,41 @@ export default function Home() {
             >
               {/* ...Swiper slides... */}
               <SwiperSlide>
-                <Image
-                  src="/images/image3.png"
-                  alt="Slide 1"
-                  width={900}
-                  height={500}
-                  className="object-cover rounded-lg"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <Image
-                 
-                  src="/images/image1.png"
-                  alt="Slide 2"
-                  width={700}
-                  height={500}
-                  className="object-cover rounded-lg"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <Image
-                 
-                  src="/images/image2.png"
-                  alt="Slide 3"
-                  width={700}
-                  height={500}
-                  className="object-cover rounded-lg"
-                />
-              </SwiperSlide>
+  <div className="relative w-full h-[500px]"> {/* Set a fixed height for the carousel */}
+    <Image
+      src="/images/image3.png"
+      alt="Slide 1"
+      fill
+      className="object-cover rounded-lg"
+      sizes="(max-width: 768px) 100vw, 900px"
+      priority
+    />
+  </div>
+</SwiperSlide>
+<SwiperSlide>
+  <div className="relative w-full h-[500px]">
+    <Image
+      src="/images/image1.png"
+      alt="Slide 2"
+      fill
+      className="object-cover rounded-lg"
+      sizes="(max-width: 768px) 100vw, 900px"
+      priority
+    />
+  </div>
+</SwiperSlide>
+<SwiperSlide>
+  <div className="relative w-full h-[500px]">
+    <Image
+      src="/images/image2.png"
+      alt="Slide 3"
+      fill
+      className="object-cover rounded-lg"
+      sizes="(max-width: 768px) 100vw, 900px"
+      priority
+    />
+  </div>
+</SwiperSlide>
             </Swiper>
           </div>
         </div>
