@@ -1,4 +1,5 @@
 "use client"
+import { Route } from 'next'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
@@ -12,156 +13,123 @@ interface FooterNav {
   items: FooterItem[]
 }
 
-export const Footer = () => { 
-    const [currentYear, setCurrentYear] = useState("2024") // Default value matches SSR
+const Footer = () => { 
+  const [currentYear, setCurrentYear] = useState("2024")
 
-    useEffect(() => {
-      setCurrentYear(new Date().getFullYear().toString())
-    }, [])
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear().toString())
+  }, [])
 
-    const footerNavs: FooterNav[] = [
-        {
-            label: "Resources",
-            items: [
-                {
-                    href: '/contact',
-                    name: 'Contact'
-                },
-                {
-                    href: '/support', 
-                    name: 'Support'
-                },
-                {
-                    href: '/docs',
-                    name: 'Documentation'
-                },
-                {
-                    href: '/pricing',
-                    name: 'Pricing'
-                }
-            ]
-        },
-        {
-            label: "About",
-            items: [
-                {
-                    href: '/company',
-                    name: 'Company'
-                },
-                {
-                    href: '/blog',
-                    name: 'Blog'
-                },
-                {
-                    href: '/careers',
-                    name: 'Careers'
-                }
-            ]
-        },
-        {
-            label: "Solutions",
-            items: [
-                {
-                    href: '/prints',
-                    name: 'Prints'
-                },
-                {
-                    href: '/web-solutions',
-                    name: 'Web Solutions'
-                },
-                {
-                    href: '/marketing',
-                    name: 'Marketing'
-                }
-            ]
-        }
-    ]
-
-    return (
-        <footer className="text-gray-500 bg-[#E5E4E2] px-4 py-5 max-w-screen-xxl mx-auto md:px-8">
-            <div className="gap-6 justify-between md:flex">
-                <div className="flex-1">
-                    <div className="max-w-xs">
-                        <img src="/images/herde_ent_logo.png" className="w-13" alt="Logo" />
-                        <p className="leading-relaxed mt-2 text-[15px]">
-                           Experts in web solutions, prints and gift items.
-                        </p>
-                    </div>
-                    <form onSubmit={(e) => e.preventDefault()}>
-                        <label className="block pt-4 pb-2">
-                            Stay up to date
-                        </label>
-                        <div className="max-w-sm flex items-center border rounded-md p-1">
-                            <input 
-                                type="email"
-                                placeholder="Enter your email"
-                                className="w-full p-2.5 outline-none"
-                            />
-                            <button
-                                className="p-2.5  bg-gradient-to-r from-[#000000] to-[#000000] text-white px-4 py-2 rounded-md hover:bg-gradient-to-r hover:from-[#73483D] hover:to-[#a45e4d] transition duration-300 ease-in-out transform hover:scale-110"
-                            >
-                                Subscribe
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div className="flex-1 mt-10 space-y-6 items-center justify-between sm:flex md:space-y-0 md:mt-0">
-                    {
-                        footerNavs.map((item, idx) => (
-                            <ul className="space-y-4" key={idx}>
-                                <h4 className="text-gray-800 font-medium">
-                                    {item.label}
-                                </h4>
-                                {
-                                    item.items.map((el, idx) => (
-                                        <li key={idx}>
-                                            <Link 
-                                                href={el.href}
-                                                className="hover:text-gray-800"
-                                            >
-                                                {el.name}
-                                            </Link>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        ))
-                    }
-                </div>
-            </div>
-            <div className="mt-8 py-6 border-t items-center justify-between sm:flex">
-    <div className="mt-4 sm:mt-0">
-        &copy; {currentYear} Herde Enterprise All rights reserved.
-    </div>
-                <div className="mt-6 sm:mt-0">
-                    <ul className="flex items-center space-x-4">
-                        <li className="w-10 h-10 border rounded-full flex items-center justify-center">
-                            <Link href="/">
-                                <svg className="svg-icon w-6 h-6 text-blue-400" viewBox="0 0 20 20">
-                                    <path fill="none" d="M18.258,3.266c-0.693,0.405-1.46,0.698-2.277,0.857c-0.653-0.686-1.586-1.115-2.618-1.115c-1.98,0-3.586,1.581-3.586,3.53c0,0.276,0.031,0.545,0.092,0.805C6.888,7.195,4.245,5.79,2.476,3.654C2.167,4.176,1.99,4.781,1.99,5.429c0,1.224,0.633,2.305,1.596,2.938C2.999,8.349,2.445,8.19,1.961,7.925C1.96,7.94,1.96,7.954,1.96,7.97c0,1.71,1.237,3.138,2.877,3.462c-0.301,0.08-0.617,0.123-0.945,0.123c-0.23,0-0.456-0.021-0.674-0.062c0.456,1.402,1.781,2.422,3.35,2.451c-1.228,0.947-2.773,1.512-4.454,1.512c-0.291,0-0.575-0.016-0.855-0.049c1.588,1,3.473,1.586,5.498,1.586c6.598,0,10.205-5.379,10.205-10.045c0-0.153-0.003-0.305-0.01-0.456c0.7-0.499,1.308-1.12,1.789-1.827c-0.644,0.28-1.334,0.469-2.06,0.555C17.422,4.782,17.99,4.091,18.258,3.266"></path>
-                                </svg>
-                            </Link>
-                        </li>
-
-                        <li className="w-10 h-10 border rounded-full flex items-center justify-center">
-                            <Link href="/">
-                                <svg className="svg-icon w-6 h-6 text-blue-700" viewBox="0 0 20 20">
-                                    <path fill="none" d="M11.344,5.71c0-0.73,0.074-1.122,1.199-1.122h1.502V1.871h-2.404c-2.886,0-3.903,1.36-3.903,3.646v1.765h-1.8V10h1.8v8.128h3.601V10h2.403l0.32-2.718h-2.724L11.344,5.71z"></path>
-                                </svg>
-                            </Link>
-                        </li>
-
-                        <li className="w-10 h-10 border rounded-full flex items-center justify-center">
-                            <Link href="/">
-                                <svg className="svg-icon w-6 h-6 text-blue-500" viewBox="0 0 20 20">
-                                    <path fill="none" d="M10,2.531c-4.125,0-7.469,3.344-7.469,7.469c0,4.125,3.344,7.469,7.469,7.469c4.125,0,7.469-3.344,7.469-7.469C17.469,5.875,14.125,2.531,10,2.531 M10,3.776c1.48,0,2.84,0.519,3.908,1.384c-1.009,0.811-2.111,1.512-3.298,2.066C9.914,6.072,9.077,5.017,8.14,4.059C8.728,3.876,9.352,3.776,10,3.776 M6.903,4.606c0.962,0.93,1.82,1.969,2.53,3.112C7.707,8.364,5.849,8.734,3.902,8.75C4.264,6.976,5.382,5.481,6.903,4.606 M3.776,10c2.219,0,4.338-0.418,6.29-1.175c0.209,0.404,0.405,0.813,0.579,1.236c-2.147,0.805-3.953,2.294-5.177,4.195C4.421,13.143,3.776,11.648,3.776,10 M10,16.224c-1.337,0-2.572-0.426-3.586-1.143c1.079-1.748,2.709-3.119,4.659-3.853c0.483,1.488,0.755,3.071,0.784,4.714C11.271,16.125,10.646,16.224,10,16.224 M13.075,15.407c-0.072-1.577-0.342-3.103-0.806-4.542c0.673-0.154,1.369-0.243,2.087-0.243c0.621,0,1.22,0.085,1.807,0.203C15.902,12.791,14.728,14.465,13.075,15.407 M14.356,9.378c-0.868,0-1.708,0.116-2.515,0.313c-0.188-0.464-0.396-0.917-0.621-1.359c1.294-0.612,2.492-1.387,3.587-2.284c0.798,0.97,1.302,2.187,1.395,3.517C15.602,9.455,14.99,9.378,14.356,9.378"></path>
-                                </svg>
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </footer>
-    )
+  return (
+    <footer className="bg-[#E5E4E2] px-4 py-8 max-w-screen-xxl mx-auto md:px-8 transition-all duration-300">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-8">
+        <div className="flex flex-col items-start gap-1">
+          <img src="/images/g2p_logo.png" className="w-12" alt="Logo" />
+           <p className="text-gray-600 text-sm font-semibold ">
+            Graphics2Prints
+          </p>
+          <p className="text-gray-600 text-sm mt-5">
+            Experts in printing, gift items and many more.
+          </p>
+        </div>
+        <nav>
+          <ul className="flex flex-col md:flex-row gap-4 md:gap-8 text-gray-700 text-base font-medium">
+            <li>
+              <Link
+                href="/"
+                className="transition-colors duration-200 hover:text-[#73483D]"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/contact"
+                className="transition-colors duration-200 hover:text-[#73483D]"
+              >
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/prints"
+                className="transition-colors duration-200 hover:text-[#73483D]"
+              >
+                Prints
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/web-solutions"
+                className="transition-colors duration-200 hover:text-[#73483D]"
+              >
+                Web Solutions
+              </Link>
+            </li>
+          </ul>
+        </nav>
+        <form
+          onSubmit={e => e.preventDefault()}
+          className="flex flex-col gap-2"
+        >
+          <label className="text-gray-700 text-sm">Stay up to date</label>
+          <div className="flex">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="p-2 rounded-l-md border border-gray-300 outline-none focus:ring-2 focus:ring-[#73483D] transition-all"
+            />
+            <button
+              className="p-2 bg-[#000000] text-white rounded-r-md hover:bg-[#a45e4d] transition-all duration-200"
+            >
+              Subscribe
+            </button>
+          </div>
+        </form>
+      </div>
+      <div className="mt-8 border-t pt-4 flex flex-col md:flex-row items-center justify-between text-gray-500 text-sm">
+        <span>&copy; {currentYear} Graphics2Prints. All rights reserved.</span>
+         <div className="flex gap-4 mt-2 md:mt-0">
+          {/* Instagram */}
+          <a
+            href="https://instagram.com/herde_enterprise"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform duration-200 hover:scale-110"
+            aria-label="Instagram"
+          >
+            <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+          </a>
+          <a
+           /* Facebook */
+            href="https://www.facebook.com/share/1C26ckQmu6/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform duration-200 hover:scale-110"
+            aria-label="Facebook"
+          >
+            <svg className="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.12 8.44 9.88v-6.99H7.9v-2.89h2.54V9.41c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.89h-2.34v6.99C18.34 21.12 22 17 22 12z" />
+            </svg>
+          </a>
+           {/* WhatsApp */}
+          <a
+            href="https://wa.me/+2348166411702"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform duration-200 hover:scale-110"
+            aria-label="WhatsApp"
+          >
+            <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.52 3.48A11.93 11.93 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.16 1.6 5.98L0 24l6.18-1.62A11.93 11.93 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.19-1.24-6.19-3.48-8.52zM12 22c-1.85 0-3.66-.5-5.22-1.44l-.37-.22-3.67.96.98-3.58-.24-.37A9.94 9.94 0 0 1 2 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.56-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.18-.29.27-.48.09-.19.05-.36-.02-.5-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47-.16-.01-.36-.01-.56-.01-.19 0-.5.07-.76.34-.26.27-1 1-.99 2.43 0 1.43 1.03 2.81 1.18 3 .15.19 2.03 3.1 4.93 4.23.69.3 1.23.48 1.65.61.69.22 1.32.19 1.81.12.55-.08 1.65-.67 1.88-1.32.23-.65.23-1.21.16-1.32-.07-.11-.25-.18-.53-.32z"/>
+            </svg>
+          </a>
+           </div>
+      </div>
+    </footer>
+  )
 }
 
+export { Footer }

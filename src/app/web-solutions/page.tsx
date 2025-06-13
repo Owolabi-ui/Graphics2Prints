@@ -1,19 +1,7 @@
 "use client"
 import PageTransition from '@/components/PageTransition/PageTransition'
-import Link from 'next/link'
-import Image from 'next/image'
 
 export default function WebSolutions() {
-  const portfolioItems = [
-    {
-      title: 'E-commerce Store',
-      description: 'Modern online store with cart and payment integration',
-      image: '/images/ecommerce-demo.jpg',
-      demoUrl: '#'
-    },
-    // Add more portfolio items
-  ]
-
   const pricingPlans = [
     {
       name: 'Basic Website',
@@ -63,39 +51,6 @@ export default function WebSolutions() {
           </div>
         </section>
 
-        {/* Portfolio Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-center mb-12 text-black">Our Portfolio</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {portfolioItems.map((item, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <div className="relative h-48">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2 text-black">{item.title}</h3>
-                    <p className="text-gray-600 mb-4">{item.description}</p>
-                    <a 
-                      href={item.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#73483D] hover:underline"
-                    >
-                      View Demo →
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Pricing Section */}
         <section className="py-20 bg-[#E5E4E2] mb-20">
           <div className="container mx-auto px-6">
@@ -123,7 +78,7 @@ export default function WebSolutions() {
                     rel="noopener noreferrer"
                     className="block w-full bg-black text-white text-center py-3 rounded-md hover:bg-[#73483D] transition-colors duration-300"
                   >
-                    Contact Us
+                    Contact Us on WhatsApp
                   </a>
                 </div>
               ))}
