@@ -1,9 +1,9 @@
 "use client"
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
 
-export default function Success() {
+ function SuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const clearCart = useCartStore(state => state.clearCart)
@@ -27,5 +27,13 @@ export default function Success() {
         Continue Shopping
       </button>
     </div>
+  )
+}
+
+export default function Success() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuccessContent />
+    </Suspense>
   )
 }
