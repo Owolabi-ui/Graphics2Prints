@@ -66,11 +66,17 @@ export default function Home() {
     async function fetchProducts() {
       try {
         const response = await fetch("/api/products");
-        const data = await response.json();
-        const randomProducts = data.data
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 8);
-        setPopularProducts(randomProducts);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          const randomProducts = data.data
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 8);
+          setPopularProducts(randomProducts);
+        } else {
+          const text = await response.text();
+          console.error("Expected JSON, got:", text);
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {

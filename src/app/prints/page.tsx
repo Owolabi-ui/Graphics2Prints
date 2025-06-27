@@ -25,8 +25,14 @@ export default function Prints() {
     const fetchProducts = async () => {
       try {
         const response = await fetch("/api/products");
-        const data = await response.json();
-        setProducts(data.data || []);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          setProducts(data.data || []);
+        } else {
+          const text = await response.text();
+          console.error("Expected JSON, got:", text);
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -35,7 +41,7 @@ export default function Prints() {
     };
 
     fetchProducts();
-      }, [items]);
+  }, [items]);
 
   if (loading) return <div>Loading...</div>;
 
