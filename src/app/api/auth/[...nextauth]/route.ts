@@ -2,6 +2,9 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import type { NextAuthOptions } from "next-auth"
 import { Pool } from 'pg'
+import bcrypt from "bcryptjs"
+import type { UserRole } from "@/types/auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const pool = new Pool({
   user: 'postgres',
@@ -11,7 +14,7 @@ const pool = new Pool({
   database: 'herde_ent'
 })
 
- const authOptions: NextAuthOptions = {
+ export const authOptions: NextAuthOptions = {
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -22,7 +25,40 @@ const pool = new Pool({
             prompt: "select_account"
           }
         }
-      })
+      }),
+      CredentialsProvider({
+       name: "Credentials",
+  credentials: {
+    email: { label: "Email", type: "email" },
+    password: { label: "Password", type: "password" },
+  },
+  async authorize(credentials: any) {
+    const { email, password } = credentials;
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        "SELECT * FROM customers WHERE email = $1",
+        [email]
+      );
+      const user = result.rows[0];
+    if (user && await bcrypt.compare(password, user.password_hash)) {
+        // Return all required fields for your User type
+        return {
+          id: user.customer_id,
+          customer_id: user.customer_id,
+          name: user.name,
+          email: user.email,
+          oauth_provider: user.oauth_provider || null,
+          oauth_id: user.oauth_id || null,
+          role: user.role || "user", // default to "user" if not set
+        };
+      }
+      return null;
+    } finally {
+      client.release();
+    }
+  },
+}),
     ],
     secret: process.env.NEXTAUTH_SECRET,
     session: {
@@ -76,22 +112,49 @@ const pool = new Pool({
           return false
         }
       },
+      
       async session({ session, token }) {
         return {
           ...session,
           user: {
             ...session.user,
-            id: token.sub
+            id: token.sub,
+            customer_id: token.customer_id,
+            role: token.role,
           }
         }
       },
-      async jwt({ token, account }) {
-        if (account) {
-          token.accessToken = account.access_token
+      async jwt({ token, user, account }) {
+        if (user && user.customer_id) {
+       token.customer_id = user.customer_id;
         }
-        return token
+       // Fetch role from DB on first login
+      if (user && user.email) {
+        const client = await pool.connect();
+        try {
+          const result = await client.query(
+            "SELECT role, is_admin FROM customers WHERE email = $1",
+            [user.email]
+          );
+          const dbUser = result.rows[0];
+          // Prefer explicit role, fallback to is_admin boolean
+          if (dbUser?.role) {
+            token.role = dbUser.role;
+          } else if (dbUser?.is_admin) {
+            token.role = "admin";
+          } else {
+            token.role = "user";
+          }
+        } finally {
+          client.release();
+        }
       }
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
     }
+  }
   }
   
   const handler = NextAuth(authOptions);

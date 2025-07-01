@@ -13,11 +13,12 @@ export default function Register(): JSX.Element {
     email: "",
     password: "",
     confirmPassword: "",
+    phone_number: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -35,20 +36,23 @@ export default function Register(): JSX.Element {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
+        const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Registration failed");
+        throw new Error(data.error || "Registration failed");
       }
+    
 
       toast.success("Registration successful");
       router.push("/login");
-    } catch {
-      toast.error("Registration failed");
+    } catch (err: any) {
+      toast.error(err.message  || "Registration failed");
     } finally {
       setIsLoading(false);
     }
@@ -91,6 +95,22 @@ export default function Register(): JSX.Element {
                   type="text"
                   required
                   value={formData.name}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phone_number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="phone_number"
+                  name="phone_number"
+                  type="text"
+                  value={formData.phone_number}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
                 />
