@@ -119,7 +119,7 @@ const pool = new Pool({
           user: {
             ...session.user,
             id: token.sub,
-            customer_id: token.customer_id,
+            customer_id: token.customer_id ?? token.sub,
             role: token.role,
           }
         }

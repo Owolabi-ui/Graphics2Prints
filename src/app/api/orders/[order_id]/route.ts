@@ -5,36 +5,55 @@ import pool from "@/lib/db";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { order_id: string } }
+  context: { params: { order_number: string } }
 ) {
+  const params = await context.params;
+  const order_number = params.order_number;
+
   const session = await getServerSession(authOptions);
 
+  console.log("Session user:", session?.user);
+
   if (!session || !session.user) {
+    console.log("Unauthorized access attempt");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const customerId = session.user.customer_id;
-  const { order_id } = params;
+
+  console.log("Querying order_number:", order_number, "for customer_id:", customerId);
 
   const client = await pool.connect();
   try {
     const result = await client.query(
-      "SELECT * FROM orders WHERE order_id = $1 AND customer_id = $2",
-      [order_id, customerId]
+      "SELECT * FROM orders WHERE order_number = $1 AND customer_id = $2",
+      [order_number, customerId]
     );
+    console.log("Query result rows:", result.rows);
     if (result.rows.length === 0) {
+      console.log("Order not found for given order_number and customer_id");
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
-    // If items is a JSON string, parse it before returning
     const order = result.rows[0];
-    if (typeof order.items === "string") {
+    // Parse items if stored as JSON string
+    let items = order.items;
+    if (typeof items === "string") {
       try {
-        order.items = JSON.parse(order.items);
+        items = JSON.parse(items);
+        console.log("Parsed items:", items);
       } catch {
-        order.items = [];
+        items = [];
       }
     }
-    return NextResponse.json(order);
+    // Return only the fields your frontend expects
+    return NextResponse.json({
+      order_number: order.order_number,
+      status: order.status,
+      created_at: order.created_at,
+      items,
+      total_amount: parseFloat(order.total_amount),
+      ready_in_days: order.ready_in_days,
+    });
   } finally {
     client.release();
   }
