@@ -18,7 +18,12 @@ export async function GET(req: NextRequest) {
       "SELECT * FROM orders WHERE customer_id = $1",
       [customerId]
     );
-    return NextResponse.json(result.rows);
+    // Parse total_amount as float for each order
+    const orders = result.rows.map(order => ({
+      ...order,
+      total_amount: parseFloat(order.total_amount)
+    }));
+    return NextResponse.json(orders);
   } finally {
     client.release();
   }

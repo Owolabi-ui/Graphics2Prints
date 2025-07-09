@@ -5,10 +5,10 @@ import pool from "@/lib/db";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { order_number: string } }
+  context: { params: { order_id: string } }
 ) {
   const params = await context.params;
-  const order_number = params.order_number;
+  const order_id = params.order_id;
 
   const session = await getServerSession(authOptions);
 
@@ -21,13 +21,13 @@ export async function GET(
 
   const customerId = session.user.customer_id;
 
-  console.log("Querying order_number:", order_number, "for customer_id:", customerId);
+  console.log("Querying order_number:", order_id, "for customer_id:", customerId);
 
   const client = await pool.connect();
   try {
     const result = await client.query(
       "SELECT * FROM orders WHERE order_number = $1 AND customer_id = $2",
-      [order_number, customerId]
+      [order_id, customerId]
     );
     console.log("Query result rows:", result.rows);
     if (result.rows.length === 0) {

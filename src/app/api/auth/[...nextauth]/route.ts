@@ -41,7 +41,7 @@ const pool = new Pool({
         [email]
       );
       const user = result.rows[0];
-    if (user && await bcrypt.compare(password, user.password_hash)) {
+    if (user && (await bcrypt.compare(password, user.password_hash))) {
         // Return all required fields for your User type
         return {
           id: user.customer_id,

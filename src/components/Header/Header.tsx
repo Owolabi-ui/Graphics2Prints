@@ -43,7 +43,6 @@ const Header = () => {
           onClick={() => setIsMenuOpen(false)}
         />
       )}
-      
       <header className={`
         bg-[#000000] fixed w-full px-6 py-4 
         flex justify-between items-center z-50 
@@ -51,11 +50,13 @@ const Header = () => {
         ${visible ? 'translate-y-0' : '-translate-y-full'}
       `}>
         <div className="flex items-center">
-          <Link href="/">
+          <Link
+            href="/"
+            className="transition duration-300 ease-in-out transform hover:scale-110"
+          >
             <Image
               src="/images/g2p_logo.png"
               alt="Herde Logo"
-              className="transition duration-300 ease-in-out transform hover:scale-110"
               width={60}
               height={40}
             />
@@ -85,50 +86,52 @@ const Header = () => {
 `}>
   {/* Navigation Links */}
   <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2">
-   <Link 
-  href="/prints"
-  className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
-  onClick={() => setIsMenuOpen(false)}
->
-  Prints
-</Link>
-<Link 
-  href="/gift-items"
-  className="px-3 py-2 rounded-md text-white text-sm whitespace-nowrap transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
-  onClick={() => setIsMenuOpen(false)}
->
-  Gift Items
-</Link>
-<Link 
-  href="/contact"
-  className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
-  onClick={() => setIsMenuOpen(false)}
->
-  Contact
-</Link>
-<Link 
-  href="/login"
-  className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
-  onClick={() => setIsMenuOpen(false)}
->
-  Login
-</Link>
-<Link 
-  href="/cart" 
-  className="relative px-4 py-2 transition-all duration-200 hover:scale-110 focus:scale-110"
-  onClick={() => setIsMenuOpen(false)}
->
-  <ShoppingCartIcon className="w-6 h-6 text-white" />
-  {itemCount > 0 && (
-    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-      {itemCount}
-    </span>
-  )}
-</Link>
+  <Link
+    href="/prints"
+    className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    Prints
+  </Link>
+  <Link
+    href="/gift-items"
+    className="px-3 py-2 rounded-md text-white text-sm whitespace-nowrap transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    Gift Items
+  </Link>
+  <Link
+    href="/contact"
+    className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    Contact
+  </Link>
+  <Link
+    href="/login"
+    className="px-3 py-2 rounded-md text-white text-sm transition-all duration-200 hover:scale-105 hover:text-[#73483D] focus:scale-105 focus:text-[#73483D] hover:bg-gray-100"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    Login
+  </Link>
+  <Link
+    href="/cart"
+    className="relative px-4 py-2 transition-all duration-200 hover:scale-110 focus:scale-110"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    <>
+      <ShoppingCartIcon className="w-6 h-6 text-white" />
+      {itemCount > 0 && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+          {itemCount}
+        </span>
+      )}
+    </>
+  </Link>
   </div>
 </nav>
       </header>
     </>
-  )
+  );
 }
 export { Header }

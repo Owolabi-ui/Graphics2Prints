@@ -48,29 +48,27 @@ export default function OrdersPage() {
           const key = order.order_number ?? index;
           return (
             <li key={key} className="border rounded p-4 shadow-sm hover:shadow-md transition">
-              <Link href={`/orders/${order.order_number}`} legacyBehavior>
-                <a className="block">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-lg text-blue-700">Order #{order.order_number}</span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        order.status === "completed"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </div>
-                  <div className="text-gray-600 mt-1">
-                    Placed on: {new Date(order.created_at).toLocaleString()}
-                  </div>
-                  <div className="text-gray-900 font-bold mt-2">
-                    Total: ₦{typeof order.total_amount === "number" ? order.total_amount.toLocaleString() : "0"}
-                  </div>
-                </a>
+              <Link href={`/orders/${order.order_number}`} className="block">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-lg text-blue-700">Order #{order.order_number}</span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      order.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : order.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+                </div>
+                <div className="text-gray-600 mt-1">
+                  Placed on: {new Date(order.created_at).toLocaleString()}
+                </div>
+                <div className="text-gray-900 font-bold mt-2">
+                  Total: ₦{typeof order.total_amount === "number" ? order.total_amount.toLocaleString() : "0"}
+                </div>
               </Link>
             </li>
           );
