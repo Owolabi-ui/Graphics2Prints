@@ -142,7 +142,7 @@ export default function Cart() {
 
   return (
     <PageTransition>
-      <div className="container mx-auto px-6 py-24">
+      <div className="container mx-auto px-6 py-24 pt-32">
         <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
           Shopping Cart
         </h1>
@@ -193,7 +193,7 @@ export default function Cart() {
                               }
                               updateQuantity(item.id, newQuantity);
                             }}
-                            className="w-20 px-2 py-1 border rounded focus:ring-2 focus:ring-[#73483D] dark:bg-gray-800 dark:border-gray-600"
+                            className="w-20 px-2 py-1 border rounded focus:ring-2 focus:ring-[#FF0000] dark:bg-gray-800 dark:border-gray-600"
                           />
                         </div>
                         <button
@@ -221,7 +221,7 @@ export default function Cart() {
                 className={`mt-4 w-full py-4 rounded-lg transition-colors ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-black hover:bg-[#73483D]"
+                    : "bg-black hover:bg-[#FF0000]"
                 } text-white`}
               >
                 {isLoading ? "Processing..." : "Proceed to Checkout"}

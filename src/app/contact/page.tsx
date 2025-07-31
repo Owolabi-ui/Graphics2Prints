@@ -33,7 +33,7 @@ export default function Contact() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-[#E5E4E2]">
-        <div className="container mx-auto px-6 py-24">
+        <div className="container mx-auto px-6 py-24 pt-32">
           <h1 className="text-4xl font-bold text-center mb-12 text-black">Contact Us</h1>
           
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
@@ -46,26 +46,26 @@ export default function Contact() {
                     <label className="block text-gray-700 mb-2">Name</label>
                     <input 
                       type="text"
-                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#73483D]"
+                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF0000]"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-700 mb-2">Email</label>
                     <input 
                       type="email"
-                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#73483D]"
+                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF0000]"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-700 mb-2">Message</label>
                     <textarea 
                       rows={4}
-                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#73483D]"
+                      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF0000]"
                     ></textarea>
                   </div>
                   <button 
                     type="submit"
-                    className="w-full bg-black text-white py-3 rounded-md hover:bg-[#73483D] transition-colors duration-300"
+                    className="w-full bg-black text-white py-3 rounded-md hover:bg-[#FF0000] transition-colors duration-300"
                   >
                     Send Message
                   </button>

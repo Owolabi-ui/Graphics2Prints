@@ -23,7 +23,7 @@ import { Suspense } from "react"
           <div className="mt-4">
             <Link
               href="/login"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-[#73483D]"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-[#FF0000]"
             >
               Return to Login
             </Link>

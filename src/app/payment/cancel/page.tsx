@@ -18,7 +18,7 @@ export default function Cancel() {
         <div className="space-y-4">
           <button
             onClick={() => router.push('/cart')}
-            className="w-full bg-black text-white px-6 py-3 rounded hover:bg-[#73483D] transition-colors"
+            className="w-full bg-black text-white px-6 py-3 rounded hover:bg-[#FF0000] transition-colors"
           >
             Return to Cart
           </button>

@@ -63,13 +63,13 @@ import { motion } from "framer-motion"
                 <div className="space-y-4">
                   <button 
                     onClick={() => router.push('/orders')}
-                    className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-[#73483D] transition-colors"
+                    className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-[#FF0000] transition-colors"
                   >
                     View Orders
                   </button>
                   <button 
                     onClick={() => router.push('/profile')}
-                    className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-[#73483D] transition-colors"
+                    className="w-full bg-black text-white px-4 py-2 rounded-md hover:bg-[#FF0000] transition-colors"
                   >
                     Edit Profile
                   </button>

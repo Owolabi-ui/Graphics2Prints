@@ -10,15 +10,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const customerId = session.user.customer_id;
-
+  // Check if the user is an admin or a regular user
   const client = await pool.connect();
   try {
-    const result = await client.query(
-      "SELECT * FROM orders WHERE customer_id = $1",
-      [customerId]
-    );
-    // Parse total_amount as float for each order
+    let result;
+    if (session.user.role === "admin") {
+      // Admin: get all orders
+      result = await client.query("SELECT * FROM orders");
+    } else {
+      // Regular user: get only their orders
+      const customerId = session.user.customer_id;
+      result = await client.query(
+        "SELECT * FROM orders WHERE customer_id = $1",
+        [customerId]
+      );
+    }
     const orders = result.rows.map(order => ({
       ...order,
       total_amount: parseFloat(order.total_amount)

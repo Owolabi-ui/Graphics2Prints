@@ -63,7 +63,7 @@ export default function Profile() {
               <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="px-4 py-2 bg-black text-white rounded-md hover:bg-[#73483D] transition-colors"
+                className="px-4 py-2 bg-black text-white rounded-md hover:bg-[#FF0000] transition-colors"
               >
                 {isEditing ? "Cancel" : "Edit Profile"}
               </button>
@@ -79,7 +79,7 @@ export default function Profile() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   disabled={!isEditing}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#73483D] focus:ring-[#73483D] disabled:bg-gray-100"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF0000] focus:ring-[#FF0000] disabled:bg-gray-100"
                 />
               </div>
 
@@ -104,7 +104,7 @@ export default function Profile() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   disabled={!isEditing}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#73483D] focus:ring-[#73483D] disabled:bg-gray-100"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF0000] focus:ring-[#FF0000] disabled:bg-gray-100"
                 />
               </div>
 
@@ -117,7 +117,7 @@ export default function Profile() {
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   disabled={!isEditing}
                   rows={3}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#73483D] focus:ring-[#73483D] disabled:bg-gray-100"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF0000] focus:ring-[#FF0000] disabled:bg-gray-100"
                 />
               </div>
 
@@ -125,7 +125,7 @@ export default function Profile() {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-black text-white rounded-md hover:bg-[#73483D] transition-colors"
+                    className="px-4 py-2 bg-black text-white rounded-md hover:bg-[#FF0000] transition-colors"
                   >
                     Save Changes
                   </button>

@@ -1,5 +1,6 @@
 import "next-auth"
 
+
 export interface User {
     customer_id: number;
     name: string;
@@ -32,3 +33,4 @@ export interface User {
         expires: string;
     }
 }
+

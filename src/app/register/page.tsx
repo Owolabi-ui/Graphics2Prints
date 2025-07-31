@@ -75,7 +75,7 @@ export default function Register(): JSX.Element {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="text-[#73483D] hover:text-black">
+              <Link href="/login" className="text-[#FF0000] hover:text-black">
                 Sign in
               </Link>
             </p>
@@ -96,7 +96,7 @@ export default function Register(): JSX.Element {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
                 />
               </div>
               <div>
@@ -112,7 +112,7 @@ export default function Register(): JSX.Element {
                   type="text"
                   value={formData.phone_number}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
                 />
               </div>
               <div>
@@ -129,7 +129,7 @@ export default function Register(): JSX.Element {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
                 />
               </div>
               <div>
@@ -146,7 +146,7 @@ export default function Register(): JSX.Element {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
                 />
               </div>
               <div>
@@ -163,7 +163,7 @@ export default function Register(): JSX.Element {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
                 />
               </div>
             </div>
@@ -173,8 +173,8 @@ export default function Register(): JSX.Element {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  isLoading ? "bg-gray-400" : "bg-black hover:bg-[#73483D]"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#73483D]`}
+                  isLoading ? "bg-gray-400" : "bg-black hover:bg-[#FF0000]"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF0000]`}
               >
                 {isLoading ? "Creating account..." : "Create account"}
               </button>

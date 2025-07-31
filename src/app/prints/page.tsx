@@ -86,7 +86,7 @@ export default function Prints() {
 
   return (
     <PageTransition>
-      <div className="relative pt-24 dark:bg-gray-800">
+      <div className="relative pt-32 dark:bg-gray-800">
         {/* Search and Filter Section */}
         <div className="container mx-auto px-6 mb-12">
           <div className="flex flex-col md:flex-row gap-6 items-center justify-between bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
@@ -98,7 +98,7 @@ export default function Prints() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-12 py-3 rounded-full border-2 border-gray-200 
-              focus:border-[#73483D] focus:ring-2 focus:ring-[#73483D]/20 
+              focus:border-[#FF0000] focus:ring-2 focus:ring-[#FF0000]/20 
               outline-none transition-all duration-300 
               bg-gray-50 dark:bg-gray-700 dark:border-gray-600 
               text-gray-900 dark:text-white placeholder-gray-500 
@@ -125,8 +125,8 @@ export default function Prints() {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="appearance-none w-full px-12 py-3 rounded-full 
-        border-2 border-gray-200 focus:border-[#73483D] 
-        focus:ring-2 focus:ring-[#73483D]/20 outline-none 
+        border-2 border-gray-200 focus:border-[#FF0000] 
+        focus:ring-2 focus:ring-[#FF0000]/20 outline-none 
         transition-all duration-300 bg-gray-50 
         dark:bg-gray-700 dark:border-gray-600 
         text-gray-900 dark:text-white cursor-pointer"
@@ -214,7 +214,7 @@ export default function Prints() {
                     setPricePerPiece(pricePerPiece);
                     setIsSidebarOpen(true);
                   }}
-                  className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#73483D] transition-colors mt-auto"
+                  className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
                 >
                   See More
                 </button>
@@ -257,7 +257,7 @@ export default function Prints() {
               setPricePerPiece(pricePerPiece);
               setIsSidebarOpen(true);
             }}
-            className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#73483D] transition-colors mt-auto"
+            className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
           >
             See More
           </button>
@@ -399,7 +399,7 @@ export default function Prints() {
                           setQuantity(val);
                           setCalculatedPrice(pricePerPiece * val);
                         }}
-                        className="w-20 px-2 py-1 border-t border-b border-gray-300 text-center focus:ring-2 focus:ring-[#73483D]"
+                        className="w-20 px-2 py-1 border-t border-b border-gray-300 text-center focus:ring-2 focus:ring-[#FF0000]"
                       />
                       <button
                         type="button"
@@ -440,13 +440,13 @@ export default function Prints() {
                       href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#73483D] transition-colors"
+                      className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#FF0000] transition-colors"
                     >
                       Order via WhatsApp
                     </a>
                     <button
                       onClick={handleAddToCart}
-                      className="flex items-center justify-center gap-2 flex-1 bg-[#73483D] text-white py-4 rounded-lg hover:bg-black transition-colors"
+                      className="flex items-center justify-center gap-2 flex-1 bg-[#FF0000] text-white py-4 rounded-lg hover:bg-black transition-colors"
                     >
                       <ShoppingCartIcon className="w-5 h-5" />
                       Add to Cart

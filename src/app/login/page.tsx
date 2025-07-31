@@ -1,10 +1,10 @@
 "use client"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import PageTransition from "@/components/PageTransition/PageTransition"
 import { toast } from "react-toastify"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation";
 
 export default function Login() { 
@@ -12,14 +12,23 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { data: session, status } = useSession();
 
-  const handleGoogleSignIn = async () => {
+   // Redirect after login based on role
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (session?.user?.role === "admin") {
+        router.replace("/admin/orders");
+      } else {
+        router.replace("/dashboard");
+      }
+    }
+  }, [session, status, router]);
+
+ const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true)
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: true
-      })
+      await signIn("google", { redirect: false })
     } catch (error) {
       console.error("Sign in error:", error)
       toast.error("An unexpected error occurred")
@@ -37,9 +46,8 @@ export default function Login() {
       password,
     });
     setIsLoading(false);
-    if (res?.ok) {
-      router.push("/dashboard"); 
-    } else {
+    if (res?.ok)
+         {
       toast.error("Invalid email or password");
     }
   };
@@ -61,7 +69,7 @@ export default function Login() {
               Don&apos;t have an account?{" "}
               <Link 
                 href="/register" 
-                className="text-[#73483D] hover:text-black transition-colors duration-200"
+                className="text-[#FF0000] hover:text-black transition-colors duration-200"
               >
                 Sign up
               </Link>
@@ -73,9 +81,9 @@ export default function Login() {
             onClick={handleGoogleSignIn}
             disabled={isLoading}
             className={`w-full flex justify-center items-center gap-3 py-3 px-4 
-              ${isLoading ? 'bg-gray-400' : 'bg-black hover:bg-[#73483D]'}
+              ${isLoading ? 'bg-gray-400' : 'bg-black hover:bg-[#FF0000]'}
               text-white rounded-md shadow-sm transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#73483D]`}
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF0000]`}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               {/* Google Icon */}
@@ -117,7 +125,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
               />
             </div>
             <div>
@@ -132,13 +140,13 @@ export default function Login() {
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#73483D] focus:border-[#73483D]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF0000] focus:border-[#FF0000]"
               />
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 bg-[#73483D] text-white rounded-md shadow-sm hover:bg-black transition-all duration-200"
+              className="w-full flex justify-center py-3 px-4 bg-[#FF0000] text-white rounded-md shadow-sm hover:bg-black transition-all duration-200"
             >
               {isLoading ? "Logging in..." : "Login"}
             </button>

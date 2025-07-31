@@ -5,6 +5,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import ClientProviders from "@/components/Providers";
 import { PaystackScript } from "./api/payment/components/PaystackScript";
+import WhatsAppButton from "@/components/WhatsappButton/WhatsAppButton";
+import GlobalLoader from "@/components/GlobalLoader/GlobalLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +38,11 @@ export default function RootLayout({
       >
         <PaystackScript />
         <ClientProviders>
+          <GlobalLoader />
           <Header />
           {children}
           <Footer />
+          <WhatsAppButton />
         </ClientProviders>
       </body>
     </html>

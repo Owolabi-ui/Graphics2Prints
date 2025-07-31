@@ -70,7 +70,8 @@ const pool = new Pool({
       signIn: '/login',
       error: '/auth/error'
     },
-    callbacks: {
+
+    callbacks: {      
       async signIn({ user, account }) {
         if (!user?.email) return false
   
@@ -153,8 +154,11 @@ const pool = new Pool({
         token.accessToken = account.access_token;
       }
       return token;
-    }
-  }
+    },
+    
+
+      }
+      
   }
   
   const handler = NextAuth(authOptions);
