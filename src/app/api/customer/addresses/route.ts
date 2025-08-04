@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { customerService, addressService } from '@/services/customerService';
 
 // GET all addresses for the current user
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     
