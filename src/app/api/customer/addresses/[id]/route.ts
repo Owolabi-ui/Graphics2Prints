@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { customerService, addressService } from '@/services/customerService';
 
 // GET a specific address
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -15,7 +16,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const addressId = parseInt(params.id);
+    const addressId = parseInt(resolvedParams.id);
     if (isNaN(addressId)) {
       return NextResponse.json({ error: 'Invalid address ID' }, { status: 400 });
     }
@@ -43,8 +44,9 @@ export async function GET(
 // PUT update an address
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -52,7 +54,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const addressId = parseInt(params.id);
+    const addressId = parseInt(resolvedParams.id);
     if (isNaN(addressId)) {
       return NextResponse.json({ error: 'Invalid address ID' }, { status: 400 });
     }
@@ -85,8 +87,9 @@ export async function PUT(
 // DELETE an address
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -94,7 +97,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const addressId = parseInt(params.id);
+    const addressId = parseInt(resolvedParams.id);
     if (isNaN(addressId)) {
       return NextResponse.json({ error: 'Invalid address ID' }, { status: 400 });
     }

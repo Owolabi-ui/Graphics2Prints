@@ -4,9 +4,10 @@ import pool from "@/lib/db";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { order_id: string } }
+  { params }: { params: Promise<{ order_id: string }> }
 ) {
-  const { order_id } = params;
+  const resolvedParams = await params;
+  const { order_id } = resolvedParams;
   const { ready_in_days } = await req.json();
 
   if (ready_in_days === undefined || ready_in_days === null || isNaN(Number(ready_in_days))) {

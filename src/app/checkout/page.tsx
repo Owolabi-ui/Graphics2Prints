@@ -165,7 +165,7 @@ const CheckoutContent = () => {
                         <AddressList
                           showAddNew={false}
                           onSelect={setSelectedAddress}
-                          selectedAddressId={selectedAddress?.id}
+                          selectedAddressId={selectedAddress?.address_id}
                         />
                       )}
                     </div>
