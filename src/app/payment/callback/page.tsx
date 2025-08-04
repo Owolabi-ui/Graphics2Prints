@@ -1,9 +1,10 @@
 "use client"
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 
-export default function PaymentCallback() {
+function PaymentCallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -69,5 +70,13 @@ export default function PaymentCallback() {
         </button>
       )}
     </div>
+  );
+}
+
+export default function PaymentCallback() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div></div>}>
+      <PaymentCallbackContent />
+    </Suspense>
   );
 }
