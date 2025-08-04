@@ -23,6 +23,10 @@
 # misc
 .DS_Store
 *.pem
+NUL
+*.bat
+data-export.json
+deploy-production.sh
 
 # debug
 npm-debug.log*

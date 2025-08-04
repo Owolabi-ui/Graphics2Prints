@@ -18,13 +18,13 @@ export default function Contact() {
     },
     {
       name: 'Facebook',
-      url: 'https://www.facebook.com/share/1C26ckQmu6/?mibextid=wwXIfr',
+      url: 'https://www.facebook.com/share/1FC3wJpJcR/?mibextid=wwXIfr',
       icon: <FaFacebook className="w-8 h-8" />,
       color: 'bg-[#1877F2] hover:bg-[#166FE5]'
     },
     {
       name: 'TikTok',
-      url: 'https://www.tiktok.com/@herde.enterprises?_t=ZM-8tv4nLBIXmY&_r=1',
+      url: 'https://www.tiktok.com/@graphics2prints?_t=ZS-8ybW2qIPPQ0&_r=1',
       icon: <FaTiktok className="w-8 h-8" />,
       color: 'bg-[#000000] hover:bg-[#333333]'
     }
@@ -108,7 +108,7 @@ export default function Contact() {
                     </p>
                     <p className="flex items-center">
                       <span className="font-semibold mr-2">Phone:</span>
-                      +234 816 641 1702
+                      +234 701 997 6637
                     </p>
                   </div>
                 </div>

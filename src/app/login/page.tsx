@@ -18,7 +18,7 @@ export default function Login() {
   useEffect(() => {
     if (status === "authenticated") {
       if (session?.user?.role === "admin") {
-        router.replace("/admin/orders");
+        router.replace("/admin");
       } else {
         router.replace("/dashboard");
       }

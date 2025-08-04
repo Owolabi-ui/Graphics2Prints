@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { X, Plus, Edit2, Trash2, Upload, Image as ImageIcon, Search, Filter } from "lucide-react";
+import { formatPrice } from "@/utils/currency";
 
 interface Product {
   id: number;
@@ -280,7 +281,7 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+    <div className="section-with-header-spacing min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -383,7 +384,7 @@ export default function AdminProductsPage() {
                     }}
                   />
                   <div className="absolute top-3 right-3 bg-white rounded-full px-2 py-1 text-sm font-semibold text-gray-700 shadow">
-                    ${product.amount}
+                    ₦{formatPrice(parseFloat(product.amount))}
                   </div>
                 </div>
                 
@@ -512,7 +513,7 @@ export default function AdminProductsPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price ($) *
+                      Price (₦) *
                     </label>
                     <input
                       type="number"

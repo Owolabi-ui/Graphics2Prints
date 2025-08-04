@@ -36,12 +36,12 @@ export default function OrdersPage() {
       });
   }, []);
 
-  if (loading) return <div className="text-center py-24">Loading orders...</div>;
-  if (error) return <div className="text-center py-24 text-red-600">{error}</div>;
-  if (orders.length === 0) return <div className="text-center py-24">No orders found.</div>;
+  if (loading) return <div className="text-center page-with-header-spacing py-24">Loading orders...</div>;
+  if (error) return <div className="text-center page-with-header-spacing py-24 text-red-600">{error}</div>;
+  if (orders.length === 0) return <div className="text-center page-with-header-spacing py-24">No orders found.</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <div className="max-w-4xl mx-auto page-with-header-spacing p-8">
       <h1 className="text-3xl font-bold mb-6">Your Orders</h1>
       <ul className="space-y-4">
         {orders.map((order, index) => {

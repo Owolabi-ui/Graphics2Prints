@@ -26,6 +26,37 @@
   }
 }
 
+/* Page Layout Fixes for Fixed Header */
+.page-content {
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* For hero sections that need to account for fixed header */
+.hero-section {
+  padding-top: calc(var(--header-height) + 2rem);
+}
+
+/* For regular sections that need top spacing */
+.section-with-header-spacing {
+  padding-top: calc(var(--header-height) + 1rem);
+}
+
+/* For pages that need proper header clearance */
+.page-with-header-spacing {
+  padding-top: calc(var(--header-height) + 2.5rem);
+}
+
+/* Mobile-specific header spacing utilities */
+.mobile-header-spacing {
+  padding-top: 6rem; /* 24 * 0.25rem = 6rem on mobile */
+}
+
+@media (min-width: 640px) {
+  .mobile-header-spacing {
+    padding-top: 7rem; /* 28 * 0.25rem = 7rem on sm+ */
+  }
+}
+
 /* Enhanced Animations */
 @keyframes fadeIn {
   from { 
@@ -461,6 +492,11 @@ body {
   
   .section-spacing {
     @apply py-12;
+  }
+
+  /* Ensure tooltips and floating elements don't get cut off */
+  .hero-section {
+    overflow: visible !important;
   }
 }
 

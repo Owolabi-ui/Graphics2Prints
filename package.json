@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
     "dev:debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "cloudinary:migrate": "node src/scripts/migrateImagesToCloudinary.js",
+    "cloudinary:upload": "node src/scripts/migrateImagesToCloudinary.js upload-only",
+    "cloudinary:update-db": "node src/scripts/migrateImagesToCloudinary.js update-db-only",
+    "cloudinary": "node scripts/cloudinary-migrate.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -19,6 +24,8 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.16",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.1",
     "framer-motion": "^12.23.12",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.535.0",
@@ -34,6 +41,7 @@
     "react-toastify": "^11.0.5",
     "stripe": "^17.7.0",
     "swiper": "^11.2.3",
+    "ts-node": "^10.9.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

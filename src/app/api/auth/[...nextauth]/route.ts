@@ -6,12 +6,10 @@ import bcrypt from "bcryptjs"
 import type { UserRole } from "@/types/auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// Use environment variable for database connection (works with both local and Neon)
 const pool = new Pool({
-  user: 'postgres',
-  password: 'Beyonce123@',
-  host: 'localhost',
-  port: 5432,
-  database: 'herde_ent'
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 })
 
  export const authOptions: NextAuthOptions = {

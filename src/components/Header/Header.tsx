@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cartStore'
 import { ShoppingCartIcon, Bars3Icon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -14,6 +15,11 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const { data: session } = useSession()
+  const pathname = usePathname()
+
+  // Pages where header should always stay visible - removed to enable scroll effect on all pages
+  // const alwaysVisiblePages = ['/dashboard', '/profile', '/orders', '/cart']
+  // const shouldAlwaysBeVisible = alwaysVisiblePages.some(page => pathname?.startsWith(page))
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -29,6 +35,7 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY
+      // Enable scroll-based visibility on all pages for consistent behavior
       setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10)
       setIsScrolled(currentScrollPos > 50)
       setPrevScrollPos(currentScrollPos)
@@ -160,6 +167,15 @@ const Header = () => {
                         >
                           Dashboard
                         </Link>
+                        {session?.user?.role === 'admin' && (
+                          <Link
+                            href="/admin"
+                            className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            Admin Panel
+                          </Link>
+                        )}
                         <Link
                           href="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -303,6 +319,17 @@ const Header = () => {
                           Dashboard
                         </Link>
                       </motion.div>
+                      {session?.user?.role === 'admin' && (
+                        <motion.div variants={linkVariants}>
+                          <Link
+                            href="/admin"
+                            className="block px-4 py-3 rounded-lg text-red-400 text-base font-medium hover:bg-red-500/10 transition-all duration-300"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Admin Panel
+                          </Link>
+                        </motion.div>
+                      )}
                       <motion.div variants={linkVariants}>
                         <Link
                           href="/profile"

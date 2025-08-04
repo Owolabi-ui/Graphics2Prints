@@ -159,13 +159,19 @@ export default function Cart() {
                     key={item.id}
                     className="flex gap-4 border-b pb-4 dark:border-gray-700"
                   >
-                    <Image
-                      src={item.image_url || "/images/placeholder.jpg"}
-                      alt={item.name}
-                      width={96}
-                      height={96}
-                      className="object-cover rounded"
-                    />
+                    {item.image_url ? (
+                      <Image
+                        src={item.image_url}
+                        alt={item.name}
+                        width={96}
+                        height={96}
+                        className="object-cover rounded"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 bg-gray-200 flex items-center justify-center rounded">
+                        <span className="text-gray-500 text-xs">No Image</span>
+                      </div>
+                    )}
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 dark:text-white">
                         {item.name}

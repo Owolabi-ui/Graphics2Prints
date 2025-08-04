@@ -148,10 +148,7 @@ export default function Home() {
   useEffect(() => {
     if (!productsRef.current) return;
     const observer = new window.IntersectionObserver(
-      ([entry]) => {
-        console.log("Products section intersection:", entry.isIntersecting);
-        setIsProductsInView(entry.isIntersecting);
-      },
+      ([entry]) => setIsProductsInView(entry.isIntersecting),
       { threshold: 0.1 }
     );
     observer.observe(productsRef.current);
@@ -182,43 +179,25 @@ export default function Home() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        console.log("Fetching products...");
         const response = await fetch("/api/products");
-        console.log("Response status:", response.status);
-        const contentType = response.headers.get("content-type");
-        console.log("Content type:", contentType);
-        if (contentType && contentType.includes("application/json")) {
+        if (response.ok) {
           const data = await response.json();
-          console.log("Products data:", data);
-          console.log("Data structure check:");
-          console.log("- data.success:", data.success);
-          console.log("- data.data exists:", !!data.data);
-          console.log("- data.data is array:", Array.isArray(data.data));
-          console.log("- data.data length:", data.data?.length);
-          console.log("- Full data object:", JSON.stringify(data, null, 2));
-          
           if (data.success && data.data && Array.isArray(data.data)) {
             if (data.data.length > 0) {
               const randomProducts = data.data
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 8);
-              console.log("Setting popular products:", randomProducts);
               setPopularProducts(randomProducts);
             } else {
-              console.log("No products found in database");
-              setPopularProducts([]); // Ensure it's an empty array
+              setPopularProducts([]);
             }
           } else {
-            console.error("Invalid data structure:", data);
-            console.error("Expected: { success: true, data: [...] }");
-            setPopularProducts([]); // Ensure it's an empty array on error
+            setPopularProducts([]);
           }
-        } else {
-          const text = await response.text();
-          console.error("Expected JSON, got:", text);
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
+        setPopularProducts([]);
       } finally {
         setLoading(false);
       }
@@ -286,7 +265,7 @@ export default function Home() {
       <div className="flex flex-col min-h-screen bg-white">
         {/* Enhanced Hero Section */}
         <section 
-          className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black pt-20"
+          className="hero-section relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black"
         >
           {/* Animated Background */}
           <div className="absolute inset-0">
@@ -419,7 +398,7 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 1 }}
-                  className="absolute -bottom-4 right-4 sm:-bottom-6 sm:right-6"
+                  className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6"
                 >
                   <Link href="/prints" className="group relative">
                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
@@ -427,7 +406,7 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     </div>
-                    <div className="absolute -top-10 right-0 bg-black text-white px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <div className="absolute -top-8 sm:-top-10 -right-2 sm:right-0 bg-black text-white px-2 py-1 sm:px-3 rounded-lg text-xs sm:text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                       View All
                     </div>
                   </Link>
@@ -574,8 +553,7 @@ export default function Home() {
         {/* Popular Products Section */}
         <section 
           ref={productsRef}
-          className="py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-[600px]"
-          style={{ border: '2px solid red', margin: '20px 0' }} // Temporary debugging
+          className="py-12 bg-gradient-to-br from-gray-50 via-white to-gray-50"
         >
           <div className="container-custom">
             <motion.div
@@ -596,17 +574,11 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              {(() => {
-                console.log("Popular products array:", popularProducts, "Length:", popularProducts.length);
-                console.log("isProductsInView:", isProductsInView);
-                return null;
-              })()}
               {popularProducts.length > 0 ? (
                 <Swiper
-                  modules={[Navigation, Pagination, Autoplay]}
+                  modules={[Pagination, Autoplay]}
                   spaceBetween={30}
                   slidesPerView={1}
-                  navigation
                   pagination={{ clickable: true }}
                   autoplay={{ delay: 4000, disableOnInteraction: false }}
                   breakpoints={{
@@ -626,13 +598,19 @@ export default function Home() {
                         className="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 h-[480px] flex flex-col border border-gray-100"
                       >
                         <div className="relative w-full h-64 overflow-hidden">
-                          <Image
-                            src={product.image_url}
-                            alt={product.image_alt_text}
-                            fill
-                            className="object-cover transform hover:scale-110 transition-transform duration-500"
-                            sizes="(max-width: 768px) 100vw, 300px"
-                          />
+                          {product.image_url ? (
+                            <Image
+                              src={product.image_url}
+                              alt={product.image_alt_text || product.name}
+                              fill
+                              className="object-cover transform hover:scale-110 transition-transform duration-500"
+                              sizes="(max-width: 768px) 100vw, 300px"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">No Image</span>
+                            </div>
+                          )}
                           <div className="absolute top-4 right-4">
                             <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                               Popular
@@ -693,7 +671,7 @@ export default function Home() {
         </section>
 
         {/* Enhanced Clients Section */}
-        <section className="py-12 bg-white">
+        <section className="py-4 sm:py-12 bg-white">
           <div className="container-custom">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -736,7 +714,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-2 sm:mt-4">
               {!showAllClients && CLIENT_LOGO_COUNT > 12 ? (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -820,12 +798,18 @@ export default function Home() {
 
               <div className="mt-12">
                 <div className="relative w-full h-80 mb-6 rounded-2xl overflow-hidden">
-                  <Image
-                    src={selectedProduct.image_url}
-                    alt={selectedProduct.image_alt_text}
-                    fill
-                    className="object-cover"
-                  />
+                  {selectedProduct.image_url ? (
+                    <Image
+                      src={selectedProduct.image_url}
+                      alt={selectedProduct.image_alt_text || selectedProduct.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-2xl">
+                      <span className="text-gray-500 text-lg">No Image Available</span>
+                    </div>
+                  )}
                 </div>
 
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">

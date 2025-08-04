@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Product {
-  id                Int     @id @default(autoincrement())
+  id                Int         @id @default(autoincrement())
   name              String
   description       String
-  amount            Decimal @db.Decimal(10, 2)
+  amount            Decimal     @db.Decimal(10, 2)
   minimum_order     Int
   category          String
   delivery_time     String
@@ -20,5 +20,124 @@ model Product {
   image_alt_text    String
   material          String
   specifications    String
+  order_items       OrderItem[]
 }
 
+model Customer {
+  customer_id    Int       @id @default(autoincrement())
+  name           String
+  email          String    @unique
+  phone_number   String?
+  password_hash  String?
+  oauth_provider String?
+  oauth_id       String?
+  role           String    @default("user")
+  is_admin       Boolean   @default(false)
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  addresses      Address[]
+  orders         Order[]
+
+  @@map("customers")
+}
+
+model Address {
+  id             Int      @id @default(autoincrement())
+  customer_id    Int
+  street_address String
+  city           String
+  state          String
+  postal_code    String
+  country        String   @default("Nigeria")
+  is_default     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  customer       Customer @relation(fields: [customer_id], references: [customer_id])
+  orders         Order[]
+
+  @@map("addresses")
+}
+
+model Order {
+  order_id            Int         @id @default(autoincrement())
+  customer_id         Int
+  total_amount        Decimal     @db.Decimal(10, 2)
+  status              String      @default("pending")
+  shipping_address_id Int?
+  payment_status      String      @default("pending")
+  payment_method      String?
+  payment_reference   String?
+  notes               String?
+  created_at          DateTime    @default(now())
+  updated_at          DateTime    @updatedAt
+  order_items         OrderItem[]
+  customer            Customer    @relation(fields: [customer_id], references: [customer_id])
+  shipping_address    Address?    @relation(fields: [shipping_address_id], references: [id])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id            Int      @id @default(autoincrement())
+  order_id      Int
+  product_id    Int
+  quantity      Int
+  unit_price    Decimal  @db.Decimal(10, 2)
+  total_price   Decimal  @db.Decimal(10, 2)
+  customization Json?
+  created_at    DateTime @default(now())
+  order         Order    @relation(fields: [order_id], references: [order_id])
+  product       Product  @relation(fields: [product_id], references: [id])
+
+  @@map("order_items")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

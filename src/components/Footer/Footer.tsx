@@ -13,7 +13,7 @@ import {
   FaFacebook, 
   FaInstagram, 
   FaWhatsapp, 
-  FaTwitter 
+  FaTiktok 
 } from 'react-icons/fa'
 
 const Footer = () => { 
@@ -46,7 +46,7 @@ const Footer = () => {
   const socialLinks = [
     {
       name: 'Facebook',
-      url: 'https://www.facebook.com/share/1C26ckQmu6/?mibextid=wwXIfr',
+      url: 'https://www.facebook.com/share/1FC3wJpJcR/?mibextid=wwXIfr',
       icon: FaFacebook,
       color: 'text-blue-600 hover:text-blue-700'
     },
@@ -58,14 +58,14 @@ const Footer = () => {
     },
     {
       name: 'WhatsApp',
-      url: 'https://wa.me/+2348166411702',
+      url: 'https://wa.me/+2347019976637',
       icon: FaWhatsapp,
       color: 'text-green-600 hover:text-green-700'
     },
     {
-      name: 'Twitter',
-      url: 'https://twitter.com/graphics2prints',
-      icon: FaTwitter,
+      name: 'TikTok',
+      url: 'https://www.tiktok.com/@graphics2prints?_t=ZS-8ybW2qIPPQ0&_r=1',
+      icon: FaTiktok,
       color: 'text-blue-400 hover:text-blue-500'
     }
   ]
@@ -157,19 +157,19 @@ const Footer = () => {
                   <div className="flex items-center space-x-3">
                     <PhoneIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
                     <a 
-                      href="tel:+2348166411702" 
+                      href="tel:+2347019976637" 
                       className="text-gray-300 text-sm hover:text-white transition-colors"
                     >
-                      +234 816 641 1702
+                      +234 701 997 6637
                     </a>
                   </div>
                   <div className="flex items-center space-x-3">
                     <EnvelopeIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
                     <a 
-                      href="mailto:info@graphics2prints.com" 
+                      href="mailto:graphics2prints@gmail.com" 
                       className="text-gray-300 text-sm hover:text-white transition-colors"
                     >
-                      info@graphics2prints.com
+                      graphics2prints@gmail.com
                     </a>
                   </div>
                 </div>

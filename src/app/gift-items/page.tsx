@@ -7,6 +7,8 @@ import PageTransition from "@/components/PageTransition/PageTransition";
 import "react-toastify/dist/ReactToastify.css";
 import { Product } from "@/types/cart";
 import Image from "next/image";
+import CloudinaryImage from "@/components/ui/CloudinaryImage";
+import { getImageFilenameFromUrl } from "@/utils/cloudinary";
 
 export default function GiftItems() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -28,9 +30,9 @@ export default function GiftItems() {
       try {
         const response = await fetch("/api/products");
         const data = await response.json();
-        // Filter only Gift Items category
+        // Filter only products with "gift-item" category
         const giftItems = (data.data || []).filter(
-          (product: Product) => product.category === "Gift Items"
+          (product: Product) => product.category === "gift-item"
         );
         setProducts(giftItems);
       } catch (error) {
@@ -120,12 +122,19 @@ export default function GiftItems() {
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
             >
               <div className="relative w-full h-80">
-                <Image
-                  src={product.image_url || "/images/placeholder.jpg"}
-                  alt={product.image_alt_text}
-                  fill
-                  className="object-cover transform hover:scale-110 transition-transform duration-300"
-                />
+                {product.image_url ? (
+                  <CloudinaryImage
+                    publicId={getImageFilenameFromUrl(product.image_url)}
+                    alt={product.image_alt_text || product.name}
+                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                    width={400}
+                    height={320}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500 text-sm">No Image</span>
+                  </div>
+                )}
               </div>
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
@@ -200,13 +209,19 @@ export default function GiftItems() {
               </button>
 
               <div className="mt-8">
-              <Image
-  src={selectedProduct.image_url || "/images/placeholder.jpg"}
-  alt={selectedProduct.image_alt_text}
-  width={400}
-  height={320}
-  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-  />
+                {selectedProduct.image_url ? (
+                  <CloudinaryImage
+                    publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
+                    alt={selectedProduct.image_alt_text || selectedProduct.name}
+                    className="w-full object-cover rounded-lg shadow-lg"
+                    width={700}
+                    height={500}
+                  />
+                ) : (
+                  <div className="w-full h-[500px] bg-gray-200 flex items-center justify-center rounded-lg shadow-lg">
+                    <span className="text-gray-500 text-lg">No Image Available</span>
+                  </div>
+                )}
                 <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                   {selectedProduct.name}
                 </h2>

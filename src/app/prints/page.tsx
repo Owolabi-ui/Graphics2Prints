@@ -7,6 +7,8 @@ import PageTransition from "@/components/PageTransition/PageTransition";
 import "react-toastify/dist/ReactToastify.css";
 import { Product } from "@/types/cart";
 import Image from "next/image";
+import CloudinaryImage from "@/components/ui/CloudinaryImage";
+import { getImageFilenameFromUrl } from "@/utils/cloudinary";
 
 export default function Prints() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,7 +20,6 @@ export default function Prints() {
   const addToCart = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
-  const [pricePerPiece, setPricePerPiece] = useState<number>(0);
   const items = useCartStore((state) => state.items);
  
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function Prints() {
     setIsSidebarOpen(false);
   };
 
-  //filtering products
+  // Filter products by search and category
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,6 +75,24 @@ export default function Prints() {
     "All Categories",
     ...new Set(products.map((product) => product.category)),
   ];
+
+  // Group products by category for display
+  const groupedProducts = () => {
+    if (selectedCategory !== "All Categories") {
+      return { [selectedCategory]: filteredProducts };
+    }
+    
+    const grouped: { [key: string]: Product[] } = {};
+    filteredProducts.forEach((product) => {
+      if (!grouped[product.category]) {
+        grouped[product.category] = [];
+      }
+      grouped[product.category].push(product);
+    });
+    return grouped;
+  };
+
+  const productGroups = groupedProducts();
 
   //price formatting function
   const formatPrice = (price: number) => {
@@ -172,100 +191,127 @@ export default function Prints() {
         </div>
 
         {/* Products Grid */}
-{filteredProducts.length === 0 ? (
-  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-    <div>No products found matching your criteria</div>
-    {/* Suggest a few products */}
-    <div className="mt-10">
-      <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">You might also like</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {[...products]
-          .filter((p) => p) // filter out undefined products
-          .sort(() => 0.5 - Math.random()) // randomize order
-          .slice(0, 8) // take only 8 products
-          .map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
-            >
-              <div className="relative w-full h-80">
-                <Image
-                  src={product.image_url || "/images/placeholder.jpg"}
-                  alt={product.image_alt_text}
-                  fill
-                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                  {product.description}
-                </p>
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setQuantity(product.minimum_order);
-                    const pricePerPiece =
-                      product.amount / product.minimum_order;
-                    setCalculatedPrice(product.amount);
-                    setPricePerPiece(pricePerPiece);
-                    setIsSidebarOpen(true);
-                  }}
-                  className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
-                >
-                  See More
-                </button>
+        {Object.keys(productGroups).length === 0 ? (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div>No products found matching your criteria</div>
+            {/* Suggest a few products */}
+            <div className="mt-10">
+              <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">You might also like</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {[...products]
+                  .filter((p) => p) // filter out undefined products
+                  .sort(() => 0.5 - Math.random()) // randomize order
+                  .slice(0, 8) // take only 8 products
+                  .map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
+                    >
+                      <div className="relative w-full h-80">
+                        {product.image_url ? (
+                          <CloudinaryImage
+                            publicId={getImageFilenameFromUrl(product.image_url)}
+                            alt={product.image_alt_text || product.name}
+                            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                            width={400}
+                            height={320}
+                          />
+                        ) : (
+                          <Image
+                            src="/images/placeholder.jpg"
+                            alt={product.name}
+                            fill
+                            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                            sizes="(max-width: 768px) 100vw, 400px"
+                          />
+                        )}
+                      </div>
+                      <div className="p-6 flex flex-col flex-grow">
+                        <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                          {product.description}
+                        </p>
+                        <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setQuantity(product.minimum_order);
+                            const pricePerPiece =
+                              product.amount / product.minimum_order;
+                            setCalculatedPrice(product.amount);
+                            setIsSidebarOpen(true);
+                          }}
+                          className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
+                        >
+                          See More
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
-          ))}
-      </div>
-    </div>
-  </div>
-) : (
-  <div className="dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-8">
-    {filteredProducts.map((product) => (
-      <div
-        key={product.id}
-        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
-      >
-        <div className="relative w-full h-80">
-          <Image
-            src={product.image_url || "/images/placeholder.jpg"}
-            alt={product.image_alt_text}
-            fill
-            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, 400px"
-          />
-        </div>
-        <div className="p-6 flex flex-col flex-grow">
-          <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
-            {product.name}
-          </h3>
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-            {product.description}
-          </p>
-          <button
-            onClick={() => {
-              setSelectedProduct(product);
-              setQuantity(product.minimum_order);
-              const pricePerPiece =
-                product.amount / product.minimum_order;
-              setCalculatedPrice(product.amount);
-              setPricePerPiece(pricePerPiece);
-              setIsSidebarOpen(true);
-            }}
-            className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
-          >
-            See More
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+          </div>
+        ) : (
+          <div className="dark:bg-gray-800 p-8">
+            {Object.entries(productGroups).map(([category, categoryProducts]) => (
+              <div key={category} className="mb-12">
+                <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-red-500 pb-4">
+                  {category}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                  {categoryProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
+                    >
+                      <div className="relative w-full h-80">
+                        {product.image_url ? (
+                          <CloudinaryImage
+                            publicId={getImageFilenameFromUrl(product.image_url)}
+                            alt={product.image_alt_text || product.name}
+                            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                            width={400}
+                            height={320}
+                          />
+                        ) : (
+                          <Image
+                            src="/images/placeholder.jpg"
+                            alt={product.name}
+                            fill
+                            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                            sizes="(max-width: 768px) 100vw, 400px"
+                          />
+                        )}
+                      </div>
+                      <div className="p-6 flex flex-col flex-grow">
+                        <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                          {product.description}
+                        </p>
+                        <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setQuantity(product.minimum_order);
+                            const pricePerPiece =
+                              product.amount / product.minimum_order;
+                            setCalculatedPrice(product.amount);
+                            setIsSidebarOpen(true);
+                          }}
+                          className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
+                        >
+                          See More
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Sidebar Overlay */}
         {isSidebarOpen && (
@@ -289,10 +335,10 @@ export default function Prints() {
             <>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="absolute top-6 right-6 text-gray-500 hover:text-black transition-colors"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -306,153 +352,104 @@ export default function Prints() {
                 </svg>
               </button>
 
-              <div className="mt-8">
-                <Image
-                width={700}
-                height={500}
-                  src={selectedProduct.image_url}
-                  alt={selectedProduct.image_alt_text}
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
-                />
-                <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
+              <div className="mt-12">
+                <div className="relative w-full h-80 mb-6 rounded-lg overflow-hidden">
+                  {selectedProduct.image_url ? (
+                    <CloudinaryImage
+                      publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
+                      alt={selectedProduct.image_alt_text || selectedProduct.name}
+                      className="w-full h-full object-cover"
+                      width={600}
+                      height={320}
+                    />
+                  ) : (
+                    <Image
+                      src="/images/placeholder.jpg"
+                      alt={selectedProduct.name}
+                      fill
+                      className="object-cover"
+                      sizes="600px"
+                    />
+                  )}
+                </div>
+
+                <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
                   {selectedProduct.name}
                 </h2>
-                <p className="mt-4 text-gray-600 text-lg leading-relaxed">
+
+                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                   {selectedProduct.description}
                 </p>
 
-                <div className="mt-8 space-y-6">
-                  <div className="space-y-4">
-                    <div className="border-b pb-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        Specifications
-                      </h3>
-                      <p className="text-gray-600">
-                        {selectedProduct.specifications}
+                <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg mb-6">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        Category:
+                      </span>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.category}
                       </p>
                     </div>
-
-                    <div className="border-b pb-4">
-                      <h3 className="text-lg font-semibold mb-2">Material</h3>
-                      <p className="text-gray-600">
-                        {selectedProduct.material}
+                    <div>
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        Minimum Order:
+                      </span>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.minimum_order} pieces
                       </p>
                     </div>
-
-                    <div className="border-b pb-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        Finishing Options
-                      </h3>
-                      <p className="text-gray-600">
-                        {selectedProduct.finishing_options}
-                      </p>
-                    </div>
-
-                    <div className="border-b pb-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        Delivery Time
-                      </h3>
-                      <p className="text-gray-600">
-                        {selectedProduct.delivery_time}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4 mt-8">
-                    {/* Quantity Selector */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <label
-                        htmlFor="quantity"
-                        className="text-gray-700 dark:text-gray-300"
-                      >
-                        Quantity:
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (quantity > selectedProduct.minimum_order) {
-                            setQuantity(
-                              quantity - selectedProduct.minimum_order
-                            );
-                            setCalculatedPrice(
-                              pricePerPiece *
-                                (quantity - selectedProduct.minimum_order)
-                            );
-                          }
-                        }}
-                        className="px-3 py-1 bg-gray-200 rounded-l hover:bg-gray-300 transition"
-                        disabled={quantity <= selectedProduct.minimum_order}
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </button>
-                      <input
-                        type="number"
-                        id="quantity"
-                        min={selectedProduct.minimum_order}
-                        step={selectedProduct.minimum_order}
-                        value={quantity}
-                        onChange={(e) => {
-                          let val = parseInt(e.target.value);
-                          if (isNaN(val) || val < selectedProduct.minimum_order)
-                            val = selectedProduct.minimum_order;
-                          setQuantity(val);
-                          setCalculatedPrice(pricePerPiece * val);
-                        }}
-                        className="w-20 px-2 py-1 border-t border-b border-gray-300 text-center focus:ring-2 focus:ring-[#FF0000]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setQuantity(quantity + selectedProduct.minimum_order);
-                          setCalculatedPrice(
-                            pricePerPiece *
-                              (quantity + selectedProduct.minimum_order)
-                          );
-                        }}
-                        className="px-3 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 space-y-6">
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-xl font-semibold mb-4">Pricing</h3>
-                      <p className="text-3xl font-bold text-gray-900">
-                        ₦
-                        {formatPrice(
-                          quantity > selectedProduct.minimum_order
-                            ? calculatedPrice
-                            : selectedProduct.amount
-                        )}
-                      </p>
-                      <p className="text-gray-600 mt-2">
-                        Minimum order: {selectedProduct.minimum_order} pieces
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <a
-                      href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#FF0000] transition-colors"
-                    >
-                      Order via WhatsApp
-                    </a>
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex items-center justify-center gap-2 flex-1 bg-[#FF0000] text-white py-4 rounded-lg hover:bg-black transition-colors"
-                    >
-                      <ShoppingCartIcon className="w-5 h-5" />
-                      Add to Cart
-                    </button>
                   </div>
                 </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                    Quantity (minimum {selectedProduct.minimum_order} pieces)
+                  </label>
+                  <input
+                    type="number"
+                    min={selectedProduct.minimum_order}
+                    value={quantity}
+                    onChange={(e) => {
+                      const newQuantity = parseInt(e.target.value);
+                      setQuantity(newQuantity);
+                      const pricePerPiece =
+                        selectedProduct.amount / selectedProduct.minimum_order;
+                      setCalculatedPrice(newQuantity * pricePerPiece);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                    focus:outline-none focus:ring-2 focus:ring-[#FF0000] focus:border-transparent
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  />
+                </div>
+
+                <div className="mb-6 p-4 bg-[#FF0000]/10 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      Price per piece:
+                    </span>
+                    <span className="text-[#FF0000] font-bold">
+                      ₦{formatPrice(selectedProduct.amount / selectedProduct.minimum_order)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      Total ({quantity} pieces):
+                    </span>
+                    <span className="text-[#FF0000] font-bold text-xl">
+                      ₦{formatPrice(calculatedPrice)}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleAddToCart}
+                  className="w-full bg-[#FF0000] text-white py-3 px-6 rounded-lg font-medium
+                  hover:bg-[#FF0000]/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <ShoppingCartIcon className="w-5 h-5" />
+                  Add to Cart
+                </button>
               </div>
             </>
           )}
