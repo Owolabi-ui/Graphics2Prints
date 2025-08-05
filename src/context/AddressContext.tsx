@@ -12,7 +12,6 @@ export interface CustomerAddress {
   postal_code?: string;
   country?: string;
   is_default: boolean;
-  address_type: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -44,7 +43,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/address');
+      const response = await fetch('/api/customer/addresses');
       
       if (!response.ok) {
         throw new Error('Failed to fetch addresses');
@@ -65,7 +64,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/address', {
+      const response = await fetch('/api/customer/addresses', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +95,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`/api/address/${id}`, {
+      const response = await fetch(`/api/customer/addresses/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +128,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`/api/address/${id}`, {
+      const response = await fetch(`/api/customer/addresses/${id}`, {
         method: 'DELETE',
       });
       
@@ -152,15 +151,13 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 
   // Get default address of a specific type
   const getDefaultAddress = (type: string = 'shipping'): CustomerAddress | null => {
-    const defaultAddress = addresses.find(addr => 
-      addr.address_type === type && addr.is_default
-    );
+    const defaultAddress = addresses.find(addr => addr.is_default);
     
     if (defaultAddress) return defaultAddress;
     
-    // If no default address found, return the first address of this type
-    const firstAddressOfType = addresses.find(addr => addr.address_type === type);
-    return firstAddressOfType || null;
+    // If no default address found, return the first address
+    const firstAddress = addresses[0];
+    return firstAddress || null;
   };
 
   // Load addresses when session changes

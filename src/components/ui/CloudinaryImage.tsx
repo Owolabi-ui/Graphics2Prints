@@ -8,8 +8,8 @@ import { getPlaceholderImage, createDataUrlPlaceholder } from '@/utils/placehold
 const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   publicId,
   alt,
-  width = 400,
-  height = 300,
+  width,
+  height,
   className = '',
   quality = 'auto',
   format = 'auto',
@@ -23,11 +23,10 @@ const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
     console.error('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is not defined');
     return (
       <img
-        src={createDataUrlPlaceholder(width, height, '#f3f4f6', 'Config Error')}
+        src={createDataUrlPlaceholder(width || 400, height || 300, '#f3f4f6', 'Config Error')}
         alt={alt}
         className={className}
-        width={width}
-        height={height}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       />
     );
   }
@@ -55,22 +54,24 @@ const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   }
     
   const imageUrl = !error && fullPublicId
-    ? getOptimizedImageUrl(fullPublicId, { width, height, quality, format })
-    : createDataUrlPlaceholder(width, height, '#f3f4f6', 'Product Image');
+    ? getOptimizedImageUrl(fullPublicId, { 
+        quality, 
+        format 
+      })
+    : createDataUrlPlaceholder(width || 400, height || 300, '#f3f4f6', 'Product Image');
 
   return (
     <img
       src={imageUrl}
       alt={alt}
       className={className}
-      width={width}
-      height={height}
       loading="lazy"
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       onError={(e) => {
         if (!error) {
           const target = e.target as HTMLImageElement;
           // Use a data URL placeholder if the Cloudinary image fails to load
-          const fallbackSrc = createDataUrlPlaceholder(width, height, '#f3f4f6', 'Image unavailable');
+          const fallbackSrc = createDataUrlPlaceholder(width || 400, height || 300, '#f3f4f6', 'Image unavailable');
           target.src = fallbackSrc;
           setError(true);
           // Log error but don't throw to avoid breaking the React error boundary

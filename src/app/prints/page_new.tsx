@@ -20,6 +20,7 @@ export default function Prints() {
   const addToCart = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
+  const [pricePerPiece, setPricePerPiece] = useState<number>(0);
   const items = useCartStore((state) => state.items);
  
   useEffect(() => {
@@ -105,10 +106,10 @@ export default function Prints() {
 
   return (
     <PageTransition>
-      <div className="relative pt-32 bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
+      <div className="relative pt-32 dark:bg-gray-800">
         {/* Search and Filter Section */}
         <div className="container mx-auto px-6 mb-12">
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-between bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row gap-6 items-center justify-between bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
             {/* Search Bar */}
             <div className="relative w-full md:w-96">
               <input
@@ -116,11 +117,12 @@ export default function Prints() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-12 py-3 rounded-full border-2 border-gray-200 dark:border-gray-600
+                className="w-full px-12 py-3 rounded-full border-2 border-gray-200 
               focus:border-[#FF0000] focus:ring-2 focus:ring-[#FF0000]/20 
               outline-none transition-all duration-300 
-              bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
-              placeholder-gray-500 dark:placeholder-gray-400"
+              bg-gray-50 dark:bg-gray-700 dark:border-gray-600 
+              text-gray-900 dark:text-white placeholder-gray-500 
+              dark:placeholder-gray-400"
               />
               <svg
                 className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
@@ -196,7 +198,7 @@ export default function Prints() {
             {/* Suggest a few products */}
             <div className="mt-10">
               <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">You might also like</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {[...products]
                   .filter((p) => p) // filter out undefined products
                   .sort(() => 0.5 - Math.random()) // randomize order
@@ -204,9 +206,9 @@ export default function Prints() {
                   .map((product) => (
                     <div
                       key={product.id}
-                      className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[350px] md:h-[500px] flex flex-col mb-4"
+                      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
                     >
-                      <div className="relative w-full h-48 md:h-80">
+                      <div className="relative w-full h-80">
                         {product.image_url ? (
                           <CloudinaryImage
                             publicId={getImageFilenameFromUrl(product.image_url)}
@@ -225,11 +227,11 @@ export default function Prints() {
                           />
                         )}
                       </div>
-                      <div className="p-3 md:p-6 flex flex-col flex-grow">
-                        <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
+                      <div className="p-6 flex flex-col flex-grow">
+                        <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                           {product.description}
                         </p>
                         <button
@@ -239,9 +241,10 @@ export default function Prints() {
                             const pricePerPiece =
                               product.amount / product.minimum_order;
                             setCalculatedPrice(product.amount);
+                            setPricePerPiece(pricePerPiece);
                             setIsSidebarOpen(true);
                           }}
-                          className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm"
+                          className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
                         >
                           See More
                         </button>
@@ -258,13 +261,13 @@ export default function Prints() {
                 <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-red-500 pb-4">
                   {category}
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
                   {categoryProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[350px] md:h-[500px] flex flex-col mb-4"
+                      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
                     >
-                      <div className="relative w-full h-48 md:h-80">
+                      <div className="relative w-full h-80">
                         {product.image_url ? (
                           <CloudinaryImage
                             publicId={getImageFilenameFromUrl(product.image_url)}
@@ -283,11 +286,11 @@ export default function Prints() {
                           />
                         )}
                       </div>
-                      <div className="p-3 md:p-6 flex flex-col flex-grow">
-                        <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
+                      <div className="p-6 flex flex-col flex-grow">
+                        <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                           {product.description}
                         </p>
                         <button
@@ -297,9 +300,10 @@ export default function Prints() {
                             const pricePerPiece =
                               product.amount / product.minimum_order;
                             setCalculatedPrice(product.amount);
+                            setPricePerPiece(pricePerPiece);
                             setIsSidebarOpen(true);
                           }}
-                          className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm"
+                          className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
                         >
                           See More
                         </button>
@@ -324,7 +328,7 @@ export default function Prints() {
         <div
           className={`
           fixed top-0 right-0 h-full bg-white dark:bg-gray-900 z-50
-          p-4 sm:p-8 overflow-y-auto shadow-2xl border-l border-gray-200 dark:border-gray-700
+          p-4 sm:p-8 overflow-y-auto shadow-2xl
           transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
           w-full sm:w-4/5 md:w-1/2 max-w-md sm:max-w-lg md:max-w-2xl
@@ -440,9 +444,9 @@ export default function Prints() {
                   <input
                     type="number"
                     min={selectedProduct.minimum_order}
-                    value={quantity || ""}
+                    value={quantity}
                     onChange={(e) => {
-                      const newQuantity = parseInt(e.target.value) || 0;
+                      const newQuantity = parseInt(e.target.value);
                       setQuantity(newQuantity);
                       const pricePerPiece =
                         selectedProduct.amount / selectedProduct.minimum_order;

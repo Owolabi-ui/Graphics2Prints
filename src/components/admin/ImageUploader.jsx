@@ -94,6 +94,14 @@ export default function ImageUploader({ currentImageUrl = "", onImageUploaded, f
     }
   };
 
+  const handleRemoveImage = () => {
+    setImageUrl("");
+    setError("");
+    if (onImageUploaded) {
+      onImageUploaded("");
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="mb-4">
@@ -123,11 +131,26 @@ export default function ImageUploader({ currentImageUrl = "", onImageUploaded, f
                 className="object-contain rounded-md"
               />
               {!isUploading && (
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 rounded-md flex items-center justify-center">
-                  <span className="text-white text-sm opacity-0 hover:opacity-100 transition-opacity">
-                    Click to change image
-                  </span>
-                </div>
+                <>
+                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 rounded-md flex items-center justify-center">
+                    <span className="text-white text-sm opacity-0 hover:opacity-100 transition-opacity">
+                      Click to change image
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveImage();
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 text-xs transition-colors"
+                    title="Remove image"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </>
               )}
             </div>
           ) : (
@@ -178,9 +201,14 @@ export default function ImageUploader({ currentImageUrl = "", onImageUploaded, f
         )}
 
         {imageUrl && !isUploading && (
-          <p className="mt-2 text-sm text-gray-500">
-            Click the image area to upload a different image
-          </p>
+          <div className="mt-2 space-y-1">
+            <p className="text-sm text-gray-500">
+              Click the image area to upload a different image
+            </p>
+            <p className="text-sm text-gray-400">
+              Use the × button to remove the current image
+            </p>
+          </div>
         )}
       </div>
     </div>

@@ -20,9 +20,8 @@ const AddressList: React.FC<AddressListProps> = ({
   const [editingAddress, setEditingAddress] = useState<CustomerAddress | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
 
-  // Filter addresses by type
-  const shippingAddresses = addresses.filter(addr => addr.address_type === 'shipping');
-  const billingAddresses = addresses.filter(addr => addr.address_type === 'billing');
+  // Filter addresses - since there's no address_type, show all addresses
+  const allAddresses = addresses;
 
   const handleEditClick = (address: CustomerAddress) => {
     setEditingAddress(address);
@@ -63,7 +62,7 @@ const AddressList: React.FC<AddressListProps> = ({
     return (
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">{title}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {addresses.map(address => (
             <motion.div 
               key={address.address_id}
@@ -139,8 +138,7 @@ const AddressList: React.FC<AddressListProps> = ({
 
       {!isAddingNew && !editingAddress && (
         <>
-          {renderAddresses(shippingAddresses, "Shipping Addresses")}
-          {renderAddresses(billingAddresses, "Billing Addresses")}
+          {renderAddresses(allAddresses, "My Addresses")}
           
           {addresses.length === 0 && (
             <div className="text-center py-4 text-gray-500">

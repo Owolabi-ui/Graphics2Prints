@@ -310,6 +310,14 @@ const Header = () => {
                   
                   {session ? (
                     <>
+                      <motion.div variants={linkVariants} className="border-b border-white/10 pb-2 mb-2">
+                        <div className="flex items-center space-x-2 px-4 py-2">
+                          <UserIcon className="w-5 h-5 text-red-400" />
+                          <span className="text-white font-medium">
+                            {session.user?.name || session.user?.email?.split('@')[0]}
+                          </span>
+                        </div>
+                      </motion.div>
                       <motion.div variants={linkVariants}>
                         <Link
                           href="/dashboard"

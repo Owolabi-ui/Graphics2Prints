@@ -29,7 +29,7 @@ export const customerService = {
     const client = await getPool().connect();
     try {
       const result = await client.query(
-        'SELECT id, name, email, phone, created_at as "createdAt", updated_at as "updatedAt" FROM customers WHERE email = $1',
+        'SELECT customer_id as id, name, email, phone_number as phone, created_at as "createdAt", updated_at as "updatedAt" FROM customers WHERE email = $1',
         [email]
       );
       
@@ -48,7 +48,7 @@ export const customerService = {
     const client = await getPool().connect();
     try {
       const result = await client.query(
-        'UPDATE customers SET name = $1, phone = $2, updated_at = NOW() WHERE id = $3 RETURNING id, name, email, phone, created_at as "createdAt", updated_at as "updatedAt"',
+        'UPDATE customers SET name = $1, phone_number = $2, updated_at = NOW() WHERE customer_id = $3 RETURNING customer_id as id, name, email, phone_number as phone, created_at as "createdAt", updated_at as "updatedAt"',
         [data.name, data.phone || null, id]
       );
       
@@ -67,11 +67,9 @@ export const addressService = {
     try {
       const result = await client.query(
         `SELECT 
-          id, customer_id as "customerId", address_type as "addressType", 
-          street_address as "streetAddress", city, state, postal_code as "postalCode", 
-          country, is_default as "isDefault", phone_number as "phoneNumber",
-          created_at as "createdAt", updated_at as "updatedAt"
-        FROM customer_addresses 
+          id as "address_id", customer_id, street_address, city, state, postal_code, 
+          country, is_default, created_at, updated_at
+        FROM addresses 
         WHERE customer_id = $1
         ORDER BY is_default DESC, created_at DESC`,
         [customerId]
@@ -89,11 +87,9 @@ export const addressService = {
     try {
       const result = await client.query(
         `SELECT 
-          id, customer_id as "customerId", address_type as "addressType", 
-          street_address as "streetAddress", city, state, postal_code as "postalCode", 
-          country, is_default as "isDefault", phone_number as "phoneNumber",
-          created_at as "createdAt", updated_at as "updatedAt"
-        FROM customer_addresses 
+          id as "address_id", customer_id, street_address, city, state, postal_code, 
+          country, is_default, created_at, updated_at
+        FROM addresses 
         WHERE id = $1 AND customer_id = $2`,
         [id, customerId]
       );
@@ -115,35 +111,31 @@ export const addressService = {
       // Start transaction
       await client.query('BEGIN');
       
-      // If setting as default, update existing addresses of same type
+      // If setting as default, update existing addresses 
       if (data.isDefault) {
         await client.query(
-          'UPDATE customer_addresses SET is_default = FALSE WHERE customer_id = $1 AND address_type = $2',
-          [customerId, data.addressType || 'shipping']
+          'UPDATE addresses SET is_default = FALSE WHERE customer_id = $1',
+          [customerId]
         );
       }
       
       // Insert the new address
       const result = await client.query(
-        `INSERT INTO customer_addresses (
-          customer_id, address_type, street_address, city, state, 
-          postal_code, country, is_default, phone_number
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `INSERT INTO addresses (
+          customer_id, street_address, city, state, 
+          postal_code, country, is_default
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING 
-          id, customer_id as "customerId", address_type as "addressType", 
-          street_address as "streetAddress", city, state, postal_code as "postalCode", 
-          country, is_default as "isDefault", phone_number as "phoneNumber",
-          created_at as "createdAt", updated_at as "updatedAt"`,
+          id as "address_id", customer_id, street_address, city, state, postal_code, 
+          country, is_default, created_at, updated_at`,
         [
           customerId,
-          data.addressType || 'shipping',
           data.streetAddress,
           data.city,
           data.state,
           data.postalCode,
           data.country || 'Nigeria',
-          data.isDefault || false,
-          data.phoneNumber || null
+          data.isDefault || false
         ]
       );
       
@@ -173,12 +165,11 @@ export const addressService = {
       // Start transaction
       await client.query('BEGIN');
       
-      // If setting as default, update existing addresses of same type
+      // If setting as default, update existing addresses
       if (data.isDefault) {
-        const addressType = data.addressType || currentAddress.addressType;
         await client.query(
-          'UPDATE customer_addresses SET is_default = FALSE WHERE customer_id = $1 AND address_type = $2 AND id != $3',
-          [customerId, addressType, id]
+          'UPDATE addresses SET is_default = FALSE WHERE customer_id = $1 AND id != $2',
+          [customerId, id]
         );
       }
       
@@ -186,11 +177,6 @@ export const addressService = {
       const updates: string[] = [];
       const values: any[] = [];
       let paramIndex = 1;
-      
-      if (data.addressType !== undefined) {
-        updates.push(`address_type = $${paramIndex++}`);
-        values.push(data.addressType);
-      }
       
       if (data.streetAddress !== undefined) {
         updates.push(`street_address = $${paramIndex++}`);
@@ -222,11 +208,6 @@ export const addressService = {
         values.push(data.isDefault);
       }
       
-      if (data.phoneNumber !== undefined) {
-        updates.push(`phone_number = $${paramIndex++}`);
-        values.push(data.phoneNumber || null);
-      }
-      
       updates.push(`updated_at = NOW()`);
       
       // Add the remaining parameters
@@ -236,13 +217,11 @@ export const addressService = {
       // Only update if there are fields to update
       if (updates.length > 1) { // More than just updated_at
         const result = await client.query(
-          `UPDATE customer_addresses SET ${updates.join(', ')}
+          `UPDATE addresses SET ${updates.join(', ')}
           WHERE id = $${paramIndex++} AND customer_id = $${paramIndex++}
           RETURNING 
-            id, customer_id as "customerId", address_type as "addressType", 
-            street_address as "streetAddress", city, state, postal_code as "postalCode", 
-            country, is_default as "isDefault", phone_number as "phoneNumber",
-            created_at as "createdAt", updated_at as "updatedAt"`,
+            id as "address_id", customer_id, street_address, city, state, postal_code, 
+            country, is_default, created_at, updated_at`,
           values
         );
         
@@ -279,20 +258,20 @@ export const addressService = {
       
       // Delete the address
       await client.query(
-        'DELETE FROM customer_addresses WHERE id = $1 AND customer_id = $2',
+        'DELETE FROM addresses WHERE id = $1 AND customer_id = $2',
         [id, customerId]
       );
       
       // If the deleted address was default, set another address as default
       if (address.isDefault) {
         const nextAddressResult = await client.query(
-          'SELECT id FROM customer_addresses WHERE customer_id = $1 AND address_type = $2 LIMIT 1',
-          [customerId, address.addressType]
+          'SELECT id FROM addresses WHERE customer_id = $1 LIMIT 1',
+          [customerId]
         );
         
         if (nextAddressResult.rows.length > 0) {
           await client.query(
-            'UPDATE customer_addresses SET is_default = TRUE WHERE id = $1',
+            'UPDATE addresses SET is_default = TRUE WHERE id = $1',
             [nextAddressResult.rows[0].id]
           );
         }

@@ -66,9 +66,6 @@ export default function Register(): JSX.Element {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg"
         >
-          {" "}
-        </motion.div>
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
           <div>
             <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
               Create your account
@@ -180,7 +177,7 @@ export default function Register(): JSX.Element {
               </button>
             </div>
           </form>
-        </div>
+        </motion.div>
       </div>
     </PageTransition>
   );

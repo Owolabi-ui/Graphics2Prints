@@ -181,11 +181,45 @@ export default function GiftItems() {
         <div
           className={`
           fixed top-0 right-0 h-full bg-white dark:bg-gray-900 z-50
-          p-8 overflow-y-auto shadow-2xl
+          p-4 sm:p-8 overflow-y-auto shadow-2xl
           transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
-          md:w-1/2 w-full max-w-2xl
+          w-full sm:w-4/5 md:w-1/2 max-w-md sm:max-w-lg md:max-w-2xl
         `}
+          onTouchStart={(e) => {
+            const touch = e.touches[0];
+            e.currentTarget.dataset.startX = touch.clientX.toString();
+            e.currentTarget.dataset.startY = touch.clientY.toString();
+          }}
+          onTouchMove={(e) => {
+            const startX = parseFloat(e.currentTarget.dataset.startX || '0');
+            const startY = parseFloat(e.currentTarget.dataset.startY || '0');
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+            const diffX = currentX - startX;
+            const diffY = Math.abs(currentY - startY);
+            
+            // Only allow horizontal swiping right (positive diffX) and only on mobile
+            // Ensure it's more horizontal than vertical movement
+            if (diffX > 0 && diffY < 50 && window.innerWidth < 640) {
+              e.preventDefault(); // Prevent scrolling
+              const translateX = Math.min(diffX, window.innerWidth);
+              e.currentTarget.style.transform = `translateX(${translateX}px)`;
+            }
+          }}
+          onTouchEnd={(e) => {
+            const startX = parseFloat(e.currentTarget.dataset.startX || '0');
+            const endX = e.changedTouches[0].clientX;
+            const diffX = endX - startX;
+            
+            // Reset transform
+            e.currentTarget.style.transform = '';
+            
+            // Close sidebar if swiped right more than 100px, only close sidebar, don't navigate
+            if (diffX > 100 && window.innerWidth < 640) {
+              setIsSidebarOpen(false);
+            }
+          }}
         >
           {selectedProduct && (
             <>
@@ -208,20 +242,20 @@ export default function GiftItems() {
                 </svg>
               </button>
 
-              <div className="mt-8">
-                {selectedProduct.image_url ? (
-                  <CloudinaryImage
-                    publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
-                    alt={selectedProduct.image_alt_text || selectedProduct.name}
-                    className="w-full object-cover rounded-lg shadow-lg"
-                    width={700}
-                    height={500}
-                  />
-                ) : (
-                  <div className="w-full h-[500px] bg-gray-200 flex items-center justify-center rounded-lg shadow-lg">
-                    <span className="text-gray-500 text-lg">No Image Available</span>
-                  </div>
-                )}
+              <div className="mt-6 sm:mt-8">
+                <div className="relative w-80 mx-auto sm:w-full sm:h-80 mb-6 rounded-lg overflow-hidden shadow-lg bg-gray-50 dark:bg-gray-800">
+                  {selectedProduct.image_url ? (
+                    <CloudinaryImage
+                      publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
+                      alt={selectedProduct.image_alt_text || selectedProduct.name}
+                      className="w-full min-h-96 object-contain sm:w-full sm:h-full sm:object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500 text-lg">No Image Available</span>
+                    </div>
+                  )}
+                </div>
                 <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                   {selectedProduct.name}
                 </h2>
@@ -299,10 +333,10 @@ export default function GiftItems() {
                         id="quantity"
                         min={selectedProduct.minimum_order}
                         step={selectedProduct.minimum_order}
-                        value={quantity}
+                        value={quantity || ""}
                         onChange={(e) => {
-                          let val = parseInt(e.target.value);
-                          if (isNaN(val) || val < selectedProduct.minimum_order)
+                          let val = parseInt(e.target.value) || selectedProduct.minimum_order;
+                          if (val < selectedProduct.minimum_order)
                             val = selectedProduct.minimum_order;
                           setQuantity(val);
                           setCalculatedPrice(pricePerPiece * val);

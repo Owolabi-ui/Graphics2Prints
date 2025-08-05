@@ -40,15 +40,24 @@ export default function Login() {
   const handleCredentialsLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    setIsLoading(false);
-    if (res?.ok)
-         {
-      toast.error("Invalid email or password");
+    
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      
+      if (res?.error) {
+        toast.error("Invalid email or password");
+      } else if (res?.ok) {
+        toast.success("Login successful!");
+        // The useEffect will handle the redirect based on role
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -46,14 +46,12 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { 
-      addressType = 'shipping',
       streetAddress, 
       city, 
       state, 
       postalCode, 
       country = 'Nigeria',
-      isDefault = false,
-      phoneNumber 
+      isDefault = false
     } = body;
 
     // Validate required fields
@@ -63,14 +61,12 @@ export async function POST(req: NextRequest) {
 
     // Create the new address
     const address = await addressService.create(customer.id, {
-      addressType,
       streetAddress,
       city,
       state,
       postalCode,
       country,
-      isDefault,
-      phoneNumber
+      isDefault
     });
 
     return NextResponse.json({ address }, { status: 201 });

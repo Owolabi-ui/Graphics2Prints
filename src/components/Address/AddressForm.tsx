@@ -5,19 +5,16 @@ import { motion } from 'framer-motion';
 interface AddressFormProps {
   address?: CustomerAddress;
   onClose: () => void;
-  addressType?: 'shipping' | 'billing';
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ 
   address, 
-  onClose,
-  addressType = 'shipping'
+  onClose
 }) => {
   const { addAddress, updateAddress } = useAddresses();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState<Omit<CustomerAddress, 'address_id' | 'customer_id' | 'created_at' | 'updated_at'>>({
-    address_type: address?.address_type || addressType,
     street_address: address?.street_address || '',
     city: address?.city || '',
     state: address?.state || '',
@@ -78,21 +75,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
     >
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address Type
-            </label>
-            <select
-              name="address_type"
-              value={formData.address_type}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-            >
-              <option value="shipping">Shipping Address</option>
-              <option value="billing">Billing Address</option>
-            </select>
-          </div>
-
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Street Address
@@ -179,7 +161,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
               className="h-4 w-4 text-primary-500 border-gray-300 rounded focus:ring-primary-500"
             />
             <label htmlFor="is_default" className="ml-2 block text-sm text-gray-700">
-              Set as default {formData.address_type} address
+              Set as default address
             </label>
           </div>
         </div>

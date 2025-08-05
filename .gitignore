@@ -44,9 +44,22 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# environment variables
+# environment variables - NEVER COMMIT THESE
 .env
 .env*.local
+.env.production
+.env.development
+
+# Testing files and artifacts
+test-user.js
+test-*.js
+*.test.backup
+coverage/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
 
 # debug
 npm-debug.log*

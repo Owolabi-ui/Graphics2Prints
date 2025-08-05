@@ -869,10 +869,10 @@ export default function Home() {
                       type="number"
                       min={selectedProduct.minimum_order}
                       step={selectedProduct.minimum_order}
-                      value={quantity}
+                      value={quantity || ""}
                       onChange={(e) => {
-                        let val = parseInt(e.target.value);
-                        if (isNaN(val) || val < selectedProduct.minimum_order)
+                        let val = parseInt(e.target.value) || selectedProduct.minimum_order;
+                        if (val < selectedProduct.minimum_order)
                           val = selectedProduct.minimum_order;
                         setQuantity(val);
                         setCalculatedPrice(pricePerPiece * val);

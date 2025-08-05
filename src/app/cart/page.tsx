@@ -188,9 +188,9 @@ export default function Cart() {
                             type="number"
                             min={item.minimum_order}
                             step={item.minimum_order}
-                            value={item.quantity}
+                            value={item.quantity || ""}
                             onChange={(e) => {
-                              const newQuantity = parseInt(e.target.value);
+                              const newQuantity = parseInt(e.target.value) || item.minimum_order;
                               if (newQuantity < item.minimum_order) {
                                 toast.error(
                                   `Minimum order is ${item.minimum_order} pieces`

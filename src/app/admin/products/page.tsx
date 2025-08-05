@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
             uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'your_upload_preset',
             multiple: false,
             maxFiles: 1,
-            folder: 'graphics2prints/products',
+            folder: 'graphics2prints_products',
             resourceType: 'image',
             clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
             maxFileSize: 10000000, // 10MB
@@ -374,15 +374,21 @@ export default function AdminProductsPage() {
             {filteredProducts.map((product) => (
               <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden">
                 <div className="relative h-48 bg-gray-100">
-                  <img
-                    src={product.image_url}
-                    alt={product.image_alt_text}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/images/placeholder.jpg';
-                    }}
-                  />
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.image_alt_text}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/placeholder.jpg';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
                   <div className="absolute top-3 right-3 bg-white rounded-full px-2 py-1 text-sm font-semibold text-gray-700 shadow">
                     ₦{formatPrice(parseFloat(product.amount))}
                   </div>
@@ -469,12 +475,22 @@ export default function AdminProductsPage() {
                     </div>
                     
                     {form.image_url && (
-                      <div className="w-32 h-32">
+                      <div className="relative w-32 h-32">
                         <img
                           src={form.image_url}
                           alt="Preview"
                           className="w-full h-full object-cover rounded-lg border border-gray-200"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setForm({ ...form, image_url: "" })}
+                          className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 text-xs transition-colors shadow-lg"
+                          title="Remove image"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
                       </div>
                     )}
                   </div>

@@ -101,6 +101,31 @@ export const authOptions: NextAuthOptions = {
         token.phone = (user as any).phone;
         token.address = (user as any).address;
       }
+      
+      // Always fetch latest role from database for consistent admin access
+      if (token.email) {
+        const client = await pool.connect();
+        try {
+          const result = await client.query(
+            "SELECT role, is_admin FROM customers WHERE email = $1",
+            [token.email]
+          );
+          const dbUser = result.rows[0];
+          if (dbUser) {
+            // Check for admin role - either explicit role or is_admin flag
+            if (dbUser.role === 'admin' || dbUser.is_admin === true) {
+              token.role = 'admin';
+            } else {
+              token.role = dbUser.role || 'customer';
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+        } finally {
+          client.release();
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {

@@ -4,14 +4,12 @@
 export interface CustomerAddressType {
   id: number;
   customerId: number;
-  addressType: string;
   streetAddress: string;
   city: string;
   state: string;
   postalCode: string;
   country: string;
   isDefault: boolean;
-  phoneNumber?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -30,24 +28,20 @@ export interface CustomerType {
 
 // Input for creating a new address
 export interface CreateAddressInput {
-  addressType?: string;
   streetAddress: string;
   city: string;
   state: string;
   postalCode: string;
   country?: string;
   isDefault?: boolean;
-  phoneNumber?: string;
 }
 
 // Input for updating an address
 export interface UpdateAddressInput {
-  addressType?: string;
   streetAddress?: string;
   city?: string;
   state?: string;
   postalCode?: string;
   country?: string;
   isDefault?: boolean;
-  phoneNumber?: string;
 }
