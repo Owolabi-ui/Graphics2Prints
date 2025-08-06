@@ -85,7 +85,7 @@ export default function AdminDashboard() {
       icon: CogIcon,
       href: "/admin/settings",
       color: "bg-gray-500",
-      stats: "Coming Soon"
+      stats: "Configure System"
     }
   ]
 

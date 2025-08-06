@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 
 // Create a new product
 export async function POST(request) {
+  let prismaClient;
   try {
     // Check if user is authenticated and is an admin
     const session = await getServerSession(authOptions);
@@ -17,29 +18,76 @@ export async function POST(request) {
     }
 
     const data = await request.json();
+    console.log('Received product data:', data);
 
     // Validate required fields
-    if (!data.name || !data.price || !data.category_id) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!data.name || !data.price) {
+      return NextResponse.json({ error: 'Name and price are required' }, { status: 400 });
     }
 
-    // Create the product
-    const product = await prisma.product.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        price: parseFloat(data.price),
-        image_url: data.image_url || '',
-        category_id: parseInt(data.category_id),
-        in_stock: data.in_stock ?? true,
-        // Add other fields as needed
-      },
-    });
+    // Create new Prisma client instance for better connection handling
+    prismaClient = new PrismaClient();
 
+    // Prepare data matching the schema
+    const productData = {
+      name: data.name,
+      description: data.description || '',
+      amount: parseFloat(data.price), // Schema uses 'amount' not 'price'
+      minimum_order: parseInt(data.minimum_order) || 1,
+      category: data.category || 'General', // Schema uses 'category' string not 'category_id'
+      delivery_time: data.delivery_time || '3-5 business days',
+      finishing_options: data.finishing_options || 'Standard',
+      image_url: data.image_url || '',
+      image_alt_text: data.image_alt_text || data.name || 'Product image',
+      material: data.material || 'Standard',
+      specifications: data.specifications || 'Standard specifications',
+    };
+
+    console.log('Processed product data:', productData);
+
+    // Create the product with timeout handling
+    const product = await Promise.race([
+      prismaClient.product.create({
+        data: productData,
+      }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout - please try again')), 10000)
+      )
+    ]);
+
+    console.log('Product created successfully:', product.id);
     return NextResponse.json(product);
+    
   } catch (error) {
     console.error('Error creating product:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    
+    // Provide more specific error messages
+    if (error.message.includes('timeout')) {
+      return NextResponse.json({ 
+        error: 'Database connection timeout. Please check your internet connection and try again.' 
+      }, { status: 503 });
+    }
+    
+    if (error.code === 'P2002') {
+      return NextResponse.json({ 
+        error: 'A product with this name already exists.' 
+      }, { status: 409 });
+    }
+    
+    if (error.code === 'P2003') {
+      return NextResponse.json({ 
+        error: 'Invalid category selected.' 
+      }, { status: 400 });
+    }
+
+    return NextResponse.json({ 
+      error: error.message || 'Failed to create product. Please try again.' 
+    }, { status: 500 });
+  } finally {
+    // Always disconnect the client
+    if (prismaClient) {
+      await prismaClient.$disconnect();
+    }
   }
 }
 

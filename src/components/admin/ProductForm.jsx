@@ -19,11 +19,15 @@ export default function ProductForm({ product = null }) {
   const [formData, setFormData] = useState({
     name: product?.name || '',
     description: product?.description || '',
-    price: product?.price || '',
+    price: product?.amount || product?.price || '', // Handle both 'amount' and 'price'
     image_url: product?.image_url || '',
-    category_id: product?.category_id || '',
-    in_stock: product?.in_stock ?? true,
-    // Add other fields as needed
+    category: product?.category || 'Prints', // Changed from category_id to category
+    minimum_order: product?.minimum_order || 1,
+    delivery_time: product?.delivery_time || '3-5 business days',
+    finishing_options: product?.finishing_options || 'Standard',
+    material: product?.material || 'Standard',
+    specifications: product?.specifications || '',
+    image_alt_text: product?.image_alt_text || '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,8 +50,8 @@ export default function ProductForm({ product = null }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.price || !formData.category_id) {
-      toast.error('Please fill all required fields');
+    if (!formData.name || !formData.price) {
+      toast.error('Please fill in product name and price');
       return;
     }
 
@@ -62,6 +66,8 @@ export default function ProductForm({ product = null }) {
       // HTTP method based on whether we're creating or updating
       const method = isEditing ? 'PUT' : 'POST';
       
+      console.log('Submitting product data:', formData);
+      
       const response = await fetch(url, {
         method,
         headers: {
@@ -70,19 +76,28 @@ export default function ProductForm({ product = null }) {
         body: JSON.stringify(formData),
       });
 
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Something went wrong');
+        throw new Error(responseData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       toast.success(isEditing ? 'Product updated successfully!' : 'Product created successfully!');
       
-      // Redirect to products list or the product detail page
+      // Redirect to products list
       router.push('/admin/products');
-      router.refresh(); // Refresh the page to show updated data
+      router.refresh();
     } catch (error) {
       console.error('Error submitting product:', error);
-      toast.error(error.message || 'Failed to save product');
+      
+      // More specific error messages
+      if (error.message.includes('timeout')) {
+        toast.error('Connection timeout. Please check your internet and try again.');
+      } else if (error.message.includes('already exists')) {
+        toast.error('A product with this name already exists.');
+      } else {
+        toast.error(error.message || 'Failed to save product. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -109,7 +124,7 @@ export default function ProductForm({ product = null }) {
 
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Price *
+              Price (Amount) *
             </label>
             <input
               type="number"
@@ -125,22 +140,24 @@ export default function ProductForm({ product = null }) {
           </div>
 
           <div>
-            <label htmlFor="category_id" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
               Category *
             </label>
             <select
-              id="category_id"
-              name="category_id"
-              value={formData.category_id}
+              id="category"
+              name="category"
+              value={formData.category}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Select a category</option>
-              {/* Replace with your categories from database */}
-              <option value="1">Prints</option>
-              <option value="2">Gift Items</option>
-              {/* Add more categories as needed */}
+              <option value="Prints">Prints</option>
+              <option value="Gift Items">Gift Items</option>
+              <option value="Business Cards">Business Cards</option>
+              <option value="Banners">Banners</option>
+              <option value="Stickers">Stickers</option>
+              <option value="Promotional Items">Promotional Items</option>
             </select>
           </div>
 
@@ -154,6 +171,86 @@ export default function ProductForm({ product = null }) {
               value={formData.description}
               onChange={handleChange}
               rows={4}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="minimum_order" className="block text-sm font-medium text-gray-700">
+              Minimum Order Quantity *
+            </label>
+            <input
+              type="number"
+              id="minimum_order"
+              name="minimum_order"
+              value={formData.minimum_order}
+              onChange={handleChange}
+              required
+              min="1"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="delivery_time" className="block text-sm font-medium text-gray-700">
+              Delivery Time *
+            </label>
+            <input
+              type="text"
+              id="delivery_time"
+              name="delivery_time"
+              value={formData.delivery_time}
+              onChange={handleChange}
+              required
+              placeholder="e.g., 3-5 business days"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="material" className="block text-sm font-medium text-gray-700">
+              Material *
+            </label>
+            <input
+              type="text"
+              id="material"
+              name="material"
+              value={formData.material}
+              onChange={handleChange}
+              required
+              placeholder="e.g., Premium paper, Canvas, Metal"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="finishing_options" className="block text-sm font-medium text-gray-700">
+              Finishing Options *
+            </label>
+            <textarea
+              id="finishing_options"
+              name="finishing_options"
+              value={formData.finishing_options}
+              onChange={handleChange}
+              required
+              rows={2}
+              placeholder="e.g., Matte, Glossy, Laminated"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="specifications" className="block text-sm font-medium text-gray-700">
+              Specifications *
+            </label>
+            <textarea
+              id="specifications"
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              required
+              rows={3}
+              placeholder="Detailed product specifications"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
