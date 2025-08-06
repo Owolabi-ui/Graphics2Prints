@@ -391,7 +391,7 @@ export default function Prints() {
                     <CloudinaryImage
                       publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
                       alt={selectedProduct.image_alt_text || selectedProduct.name}
-                      className="w-full min-h-96 object-contain sm:w-full sm:h-full sm:object-cover"
+                      className="w-full min-h-96 object-contain sm:w-full sm:h-full sm:object-contain"
                     />
                   ) : (
                     <Image

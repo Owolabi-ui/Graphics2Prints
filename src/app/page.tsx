@@ -803,7 +803,7 @@ export default function Home() {
                       src={selectedProduct.image_url}
                       alt={selectedProduct.image_alt_text || selectedProduct.name}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-2xl">
