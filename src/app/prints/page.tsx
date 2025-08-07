@@ -412,6 +412,44 @@ export default function Prints() {
                   {selectedProduct.description}
                 </p>
 
+                <div className="mt-8 space-y-6 mb-6">
+                  <div className="space-y-4">
+                    <div className="border-b pb-4">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                        Specifications
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.specifications}
+                      </p>
+                    </div>
+
+                    <div className="border-b pb-4">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Material</h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.material}
+                      </p>
+                    </div>
+
+                    <div className="border-b pb-4">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                        Finishing Options
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.finishing_options}
+                      </p>
+                    </div>
+
+                    <div className="border-b pb-4">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                        Delivery Time
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProduct.delivery_time}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg mb-6">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
@@ -473,14 +511,23 @@ export default function Prints() {
                   </div>
                 </div>
 
-                <button
-                  onClick={handleAddToCart}
-                  className="w-full bg-[#FF0000] text-white py-3 px-6 rounded-lg font-medium
-                  hover:bg-[#FF0000]/90 transition-colors flex items-center justify-center gap-2"
-                >
-                  <ShoppingCartIcon className="w-5 h-5" />
-                  Add to Cart
-                </button>
+                <div className="flex gap-4">
+                  <a
+                    href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#FF0000] transition-colors"
+                  >
+                    Order via WhatsApp
+                  </a>
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex items-center justify-center gap-2 flex-1 bg-[#FF0000] text-white py-4 rounded-lg hover:bg-black transition-colors"
+                  >
+                    <ShoppingCartIcon className="w-5 h-5" />
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </>
           )}
