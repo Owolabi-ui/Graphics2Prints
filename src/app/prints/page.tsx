@@ -386,12 +386,12 @@ export default function Prints() {
               </button>
 
               <div className="mt-8 sm:mt-12">
-                <div className="relative w-80 mx-auto sm:w-full sm:h-80 mb-6 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
+                <div className="relative w-80 mx-auto sm:w-full mb-6 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
                   {selectedProduct.image_url ? (
                     <CloudinaryImage
                       publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
                       alt={selectedProduct.image_alt_text || selectedProduct.name}
-                      className="w-full min-h-96 object-contain sm:w-full sm:h-full sm:object-contain"
+                      className="w-full min-h-96 object-contain sm:w-full sm:h-auto sm:object-contain"
                     />
                   ) : (
                     <Image

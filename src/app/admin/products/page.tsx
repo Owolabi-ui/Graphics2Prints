@@ -17,6 +17,10 @@ interface Product {
   finishing_options: string;
   material: string;
   specifications: string;
+  availability_type?: string;
+  is_available?: boolean;
+  custom_price_note?: string;
+  pre_order_note?: string;
 }
 
 const initialFormState = {
@@ -32,6 +36,10 @@ const initialFormState = {
   finishing_options: "",
   material: "",
   specifications: "",
+  availability_type: "in_stock",
+  is_available: true,
+  custom_price_note: "",
+  pre_order_note: "",
 };
 
 declare global {
@@ -207,22 +215,27 @@ export default function AdminProductsPage() {
       widgetRef.current.open();
     } else {
       setError('Cloudinary widget not loaded. Please refresh the page.');
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
     // Validation
-    if (!form.name || !form.amount || !form.minimum_order || !form.category) {
+    if (!form.name || !form.minimum_order || !form.category) {
       setError("Please fill in all required fields.");
+      return;
+    }
+
+    if (form.availability_type !== 'custom_price' && (!form.amount || parseFloat(form.amount) <= 0)) {
+      setError("Please enter a valid price.");
       return;
     }
 
     if (!form.image_url) {
       setError("Please upload an image.");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      amount: form.availability_type === 'custom_price' ? 0 : parseFloat(form.amount),
+      minimum_order: Number(form.minimum_order),
+    };setError("Please upload an image.");
       return;
     }
 
@@ -514,20 +527,27 @@ export default function AdminProductsPage() {
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name *
+                      Price (₦) {form.availability_type === 'custom_price' ? '' : '*'}
                     </label>
                     <input
-                      type="text"
-                      name="name"
-                      value={form.name}
+                      type="number"
+                      step="0.01"
+                      name="amount"
+                      value={form.amount}
                       onChange={handleInputChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      required
+                      placeholder={form.availability_type === 'custom_price' ? 'Contact for custom pricing' : ''}
+                      disabled={form.availability_type === 'custom_price'}
+                      required={form.availability_type !== 'custom_price'}
                     />
+                    {form.availability_type === 'custom_price' && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Price disabled for custom pricing products. Customers will contact for quotes.
+                      </p>
+                    )}
                   </div>
-
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Price (₦) *
                     </label>
@@ -624,14 +644,6 @@ export default function AdminProductsPage() {
                     <input
                       type="text"
                       name="finishing_options"
-                      value={form.finishing_options}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="e.g., Matte, Glossy, UV Coating"
-                      required
-                    />
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Specifications *
@@ -639,6 +651,63 @@ export default function AdminProductsPage() {
                     <input
                       type="text"
                       name="specifications"
+                      value={form.specifications}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="e.g., 300 GSM, A4 Size, CMYK"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Availability Type *
+                    </label>
+                    <select
+                      name="availability_type"
+                      value={form.availability_type}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      required
+                    >
+                      <option value="in_stock">In Stock</option>
+                      <option value="pre_order">Pre-Order</option>
+                      <option value="custom_price">Custom Price (Contact for Quote)</option>
+                    </select>
+                  </div>
+
+                  {form.availability_type === 'pre_order' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Pre-Order Note
+                      </label>
+                      <textarea
+                        name="pre_order_note"
+                        value={form.pre_order_note}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="e.g., Available for pre-order, ships in 2-3 weeks"
+                        rows={3}
+                      />
+                    </div>
+                  )}
+
+                  {form.availability_type === 'custom_price' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Custom Price Note
+                      </label>
+                      <textarea
+                        name="custom_price_note"
+                        value={form.custom_price_note}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="e.g., Contact us for bulk pricing, quotes available on request"
+                        rows={3}
+                      />
+                    </div>
+                  )}
+                </div>name="specifications"
                       value={form.specifications}
                       onChange={handleInputChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
