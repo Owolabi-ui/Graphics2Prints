@@ -190,10 +190,6 @@ export default function AdminProductsPage() {
         finishing_options: product.finishing_options,
         material: product.material,
         specifications: product.specifications,
-        availability_type: product.availability_type || "in_stock",
-        is_available: product.is_available ?? true,
-        custom_price_note: product.custom_price_note || "",
-        pre_order_note: product.pre_order_note || "",
       });
       setIsEditing(true);
     } else {
@@ -222,7 +218,7 @@ export default function AdminProductsPage() {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -246,6 +242,12 @@ export default function AdminProductsPage() {
     const payload = {
       ...form,
       amount: form.availability_type === 'custom_price' ? 0 : parseFloat(form.amount),
+      minimum_order: Number(form.minimum_order),
+    };
+
+    const payload = {
+      ...form,
+      amount: parseFloat(form.amount),
       minimum_order: Number(form.minimum_order),
     };
 
@@ -531,22 +533,9 @@ export default function AdminProductsPage() {
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={form.name}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      required
-                    />
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price (₦) {form.availability_type !== 'custom_price' ? '*' : ''}
+                      Price (₦) {form.availability_type === 'custom_price' ? '' : '*'}
                     </label>
                     <input
                       type="number"
@@ -555,9 +544,27 @@ export default function AdminProductsPage() {
                       value={form.amount}
                       onChange={handleInputChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      required={form.availability_type !== 'custom_price'}
+                      placeholder={form.availability_type === 'custom_price' ? 'Contact for custom pricing' : ''}
                       disabled={form.availability_type === 'custom_price'}
-                      placeholder={form.availability_type === 'custom_price' ? 'Custom pricing - no fixed price' : ''}
+                      required={form.availability_type !== 'custom_price'}
+                    />
+                    {form.availability_type === 'custom_price' && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Price disabled for custom pricing products. Customers will contact for quotes.
+                      </p>
+                    )}
+                  </div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Price (₦) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      name="amount"
+                      value={form.amount}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      required
                     />
                   </div>
 
@@ -591,58 +598,6 @@ export default function AdminProductsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Availability Type *
-                    </label>
-                    <select
-                      name="availability_type"
-                      value={form.availability_type}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      required
-                    >
-                      <option value="in_stock">In Stock</option>
-                      <option value="pre_order">Pre-Order</option>
-                      <option value="custom_price">Custom Price</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Conditional fields based on availability type */}
-                {form.availability_type === 'pre_order' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Pre-Order Note
-                    </label>
-                    <textarea
-                      name="pre_order_note"
-                      value={form.pre_order_note}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="e.g., Available for pre-order, ships in 2-3 weeks"
-                    />
-                  </div>
-                )}
-
-                {form.availability_type === 'custom_price' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Custom Price Note
-                    </label>
-                    <textarea
-                      name="custom_price_note"
-                      value={form.custom_price_note}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="e.g., Price varies based on quantity and specifications"
-                    />
-                  </div>
-                )}
-
-                {/* Additional Information */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Delivery Time *
                     </label>
@@ -695,14 +650,6 @@ export default function AdminProductsPage() {
                     <input
                       type="text"
                       name="finishing_options"
-                      value={form.finishing_options}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="e.g., Matte, Glossy, UV Coating"
-                      required
-                    />
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Specifications *
@@ -710,6 +657,63 @@ export default function AdminProductsPage() {
                     <input
                       type="text"
                       name="specifications"
+                      value={form.specifications}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="e.g., 300 GSM, A4 Size, CMYK"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Availability Type *
+                    </label>
+                    <select
+                      name="availability_type"
+                      value={form.availability_type}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      required
+                    >
+                      <option value="in_stock">In Stock</option>
+                      <option value="pre_order">Pre-Order</option>
+                      <option value="custom_price">Custom Price (Contact for Quote)</option>
+                    </select>
+                  </div>
+
+                  {form.availability_type === 'pre_order' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Pre-Order Note
+                      </label>
+                      <textarea
+                        name="pre_order_note"
+                        value={form.pre_order_note}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="e.g., Available for pre-order, ships in 2-3 weeks"
+                        rows={3}
+                      />
+                    </div>
+                  )}
+
+                  {form.availability_type === 'custom_price' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Custom Price Note
+                      </label>
+                      <textarea
+                        name="custom_price_note"
+                        value={form.custom_price_note}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="e.g., Contact us for bulk pricing, quotes available on request"
+                        rows={3}
+                      />
+                    </div>
+                  )}
+                </div>name="specifications"
                       value={form.specifications}
                       onChange={handleInputChange}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
