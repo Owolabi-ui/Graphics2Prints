@@ -4,10 +4,19 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 
+interface MigrationResult {
+  success: boolean;
+  error?: string;
+  message?: string;
+  existingColumns?: number;
+  updatedProducts?: number;
+  [key: string]: any;
+}
+
 export default function MigrationPage() {
   const { data: session } = useSession();
   const [isRunning, setIsRunning] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<MigrationResult | null>(null);
 
   const runMigration = async () => {
     if (!session?.user?.email?.includes('graphics2prints@gmail.com')) {
@@ -40,7 +49,10 @@ export default function MigrationPage() {
     } catch (error) {
       console.error('Migration error:', error);
       toast.error('Failed to run migration');
-      setResult({ success: false, error: error.message });
+      setResult({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
     } finally {
       setIsRunning(false);
     }

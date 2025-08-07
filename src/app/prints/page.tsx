@@ -398,7 +398,7 @@ export default function Prints() {
                       src="/images/placeholder.jpg"
                       alt={selectedProduct.name}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       sizes="600px"
                     />
                   )}

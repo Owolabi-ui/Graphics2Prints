@@ -32,7 +32,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications } = body
+    const { name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications, availability_type, is_available, custom_price_note, pre_order_note } = body
 
     if (!name || !amount || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
@@ -50,7 +50,11 @@ export async function POST(request: Request) {
         delivery_time,
         finishing_options,
         material,
-        specifications
+        specifications,
+        availability_type: availability_type || 'in_stock',
+        is_available: is_available !== undefined ? is_available : true,
+        custom_price_note: custom_price_note || null,
+        pre_order_note: pre_order_note || null
       }
     })
 
@@ -64,7 +68,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json()
-    const { id, name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications } = body
+    const { id, name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications, availability_type, is_available, custom_price_note, pre_order_note } = body
 
     if (!id || !name || !amount || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
@@ -83,7 +87,11 @@ export async function PUT(request: Request) {
         delivery_time,
         finishing_options,
         material,
-        specifications
+        specifications,
+        availability_type: availability_type || 'in_stock',
+        is_available: is_available !== undefined ? is_available : true,
+        custom_price_note: custom_price_note || null,
+        pre_order_note: pre_order_note || null
       }
     })
 
