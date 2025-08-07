@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import ImageUploader from './ImageUploader';
 
 /**
- * Product form for admin panel
+ * Enhanced Product form for admin panel with availability types
  * @param {Object} props
  * @param {Object} props.product - Product data when editing (optional)
  * @returns {JSX.Element}

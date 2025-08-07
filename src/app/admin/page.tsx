@@ -17,6 +17,12 @@ export default function AdminDashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
+  const [stats, setStats] = useState({
+    totalOrders: '--',
+    totalProducts: '--',
+    totalCustomers: '--',
+    totalRevenue: '--'
+  })
 
   useEffect(() => {
     if (status === 'loading') return
@@ -27,6 +33,30 @@ export default function AdminDashboard() {
       return
     }
 
+    // Fetch dashboard stats
+    const fetchStats = async () => {
+      try {
+        // Fetch products count
+        const productsResponse = await fetch('/api/products')
+        const productsData = await productsResponse.json()
+        const totalProducts = productsData.success ? productsData.count || productsData.data?.length || 0 : 0
+
+        // Fetch orders count (when available)
+        // const ordersResponse = await fetch('/api/orders')
+        // const ordersData = await ordersResponse.json()
+
+        setStats({
+          totalOrders: '--', // Will be updated when orders API is ready
+          totalProducts: totalProducts.toString(),
+          totalCustomers: '--', // Will be updated when customers API is ready
+          totalRevenue: '--' // Will be updated when revenue calculation is ready
+        })
+      } catch (error) {
+        console.error('Error fetching stats:', error)
+      }
+    }
+
+    fetchStats()
     setIsLoading(false)
   }, [session, status, router])
 
@@ -117,7 +147,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-900">--</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
                 <ClipboardDocumentListIcon className="h-6 w-6 text-blue-600" />
@@ -129,7 +159,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Products</p>
-                <p className="text-2xl font-bold text-gray-900">--</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalProducts}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <ShoppingBagIcon className="h-6 w-6 text-green-600" />
@@ -141,7 +171,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Customers</p>
-                <p className="text-2xl font-bold text-gray-900">--</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalCustomers}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
                 <UsersIcon className="h-6 w-6 text-purple-600" />
@@ -153,7 +183,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue (₦)</p>
-                <p className="text-2xl font-bold text-gray-900">--</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalRevenue}</p>
               </div>
               <div className="p-3 bg-emerald-100 rounded-lg">
                 <CurrencyDollarIcon className="h-6 w-6 text-emerald-600" />
