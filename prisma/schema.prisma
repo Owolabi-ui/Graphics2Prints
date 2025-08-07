@@ -20,6 +20,10 @@ model Product {
   image_alt_text    String
   material          String
   specifications    String
+  availability_type String?     @default("in_stock") // "in_stock", "pre_order", "custom_price" - Made optional
+  is_available      Boolean?    @default(true) // Made optional
+  custom_price_note String?     // For custom pricing instructions
+  pre_order_note    String?     // For pre-order specific details
   order_items       OrderItem[]
 }
 

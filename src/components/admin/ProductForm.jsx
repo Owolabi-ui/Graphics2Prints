@@ -28,6 +28,10 @@ export default function ProductForm({ product = null }) {
     material: product?.material || 'Standard',
     specifications: product?.specifications || '',
     image_alt_text: product?.image_alt_text || '',
+    availability_type: product?.availability_type || 'in_stock',
+    is_available: product?.is_available !== undefined ? product.is_available : true,
+    custom_price_note: product?.custom_price_note || '',
+    pre_order_note: product?.pre_order_note || '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -132,12 +136,68 @@ export default function ProductForm({ product = null }) {
               name="price"
               value={formData.price}
               onChange={handleChange}
-              required
+              required={formData.availability_type !== 'custom_price'}
               min="0"
               step="0.01"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={formData.availability_type === 'custom_price'}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
             />
+            {formData.availability_type === 'custom_price' && (
+              <p className="mt-1 text-sm text-gray-500">Price not applicable for custom pricing products</p>
+            )}
           </div>
+
+          <div>
+            <label htmlFor="availability_type" className="block text-sm font-medium text-gray-700">
+              Availability Type *
+            </label>
+            <select
+              id="availability_type"
+              name="availability_type"
+              value={formData.availability_type}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="in_stock">In Stock (Regular)</option>
+              <option value="pre_order">Pre-Order</option>
+              <option value="custom_price">Custom Price (Contact for Quote)</option>
+            </select>
+          </div>
+
+          {formData.availability_type === 'pre_order' && (
+            <div>
+              <label htmlFor="pre_order_note" className="block text-sm font-medium text-gray-700">
+                Pre-Order Note
+              </label>
+              <textarea
+                id="pre_order_note"
+                name="pre_order_note"
+                value={formData.pre_order_note}
+                onChange={handleChange}
+                rows={2}
+                placeholder="e.g., Expected availability in 2-3 weeks, requires 50% deposit"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          )}
+
+          {formData.availability_type === 'custom_price' && (
+            <div>
+              <label htmlFor="custom_price_note" className="block text-sm font-medium text-gray-700">
+                Custom Price Instructions
+              </label>
+              <textarea
+                id="custom_price_note"
+                name="custom_price_note"
+                value={formData.custom_price_note}
+                onChange={handleChange}
+                rows={2}
+                placeholder="e.g., Contact us for bulk pricing, depends on size and quantity"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          )}
 
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
@@ -258,14 +318,14 @@ export default function ProductForm({ product = null }) {
           <div className="flex items-center">
             <input
               type="checkbox"
-              id="in_stock"
-              name="in_stock"
-              checked={formData.in_stock}
+              id="is_available"
+              name="is_available"
+              checked={formData.is_available}
               onChange={handleChange}
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label htmlFor="in_stock" className="ml-2 block text-sm text-gray-700">
-              In Stock
+            <label htmlFor="is_available" className="ml-2 block text-sm text-gray-700">
+              Available for Purchase
             </label>
           </div>
         </div>

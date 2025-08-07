@@ -21,8 +21,8 @@ export async function POST(request) {
     console.log('Received product data:', data);
 
     // Validate required fields
-    if (!data.name || !data.price) {
-      return NextResponse.json({ error: 'Name and price are required' }, { status: 400 });
+    if (!data.name || (!data.price && data.availability_type !== 'custom_price')) {
+      return NextResponse.json({ error: 'Name is required, and price is required unless using custom pricing' }, { status: 400 });
     }
 
     // Create new Prisma client instance for better connection handling
@@ -32,7 +32,7 @@ export async function POST(request) {
     const productData = {
       name: data.name,
       description: data.description || '',
-      amount: parseFloat(data.price), // Schema uses 'amount' not 'price'
+      amount: data.availability_type === 'custom_price' ? 0 : parseFloat(data.price), // Set amount to 0 for custom pricing
       minimum_order: parseInt(data.minimum_order) || 1,
       category: data.category || 'General', // Schema uses 'category' string not 'category_id'
       delivery_time: data.delivery_time || '3-5 business days',
@@ -41,6 +41,10 @@ export async function POST(request) {
       image_alt_text: data.image_alt_text || data.name || 'Product image',
       material: data.material || 'Standard',
       specifications: data.specifications || 'Standard specifications',
+      availability_type: data.availability_type || 'in_stock',
+      is_available: data.is_available !== undefined ? data.is_available : true,
+      custom_price_note: data.custom_price_note || null,
+      pre_order_note: data.pre_order_note || null,
     };
 
     console.log('Processed product data:', productData);
