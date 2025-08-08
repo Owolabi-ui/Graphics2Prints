@@ -34,15 +34,21 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications, availability_type, is_available, custom_price_note, pre_order_note } = body
 
-    if (!name || !amount || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
+    // For custom_price items, amount is not required
+    const isCustomPrice = availability_type === 'custom_price'
+    
+    if (!name || (!isCustomPrice && !amount) || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
     }
+
+    // Log the request for debugging mobile issues
+    console.log('Creating product with availability_type:', availability_type, 'amount:', amount)
 
     const newProduct = await prisma.product.create({
       data: {
         name,
         description: description || '',
-        amount,
+        amount: isCustomPrice ? 0 : (amount || 0),
         image_url: image_url || '',
         image_alt_text,
         minimum_order,
@@ -70,16 +76,22 @@ export async function PUT(request: Request) {
     const body = await request.json()
     const { id, name, description, amount, image_url, image_alt_text, minimum_order, category, delivery_time, finishing_options, material, specifications, availability_type, is_available, custom_price_note, pre_order_note } = body
 
-    if (!id || !name || !amount || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
+    // For custom_price items, amount is not required
+    const isCustomPrice = availability_type === 'custom_price'
+    
+    if (!id || !name || (!isCustomPrice && !amount) || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
     }
+
+    // Log the request for debugging mobile issues
+    console.log('Updating product with availability_type:', availability_type, 'amount:', amount)
 
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         name,
         description: description || '',
-        amount,
+        amount: isCustomPrice ? 0 : (amount || 0),
         image_url: image_url || '',
         image_alt_text,
         minimum_order,

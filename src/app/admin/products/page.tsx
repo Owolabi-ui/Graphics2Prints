@@ -177,7 +177,29 @@ export default function AdminProductsPage() {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    
+    // Special handling for availability_type changes
+    if (name === 'availability_type') {
+      const updatedForm = { ...form, [name]: value };
+      
+      // Clear amount when switching to custom_price
+      if (value === 'custom_price') {
+        updatedForm.amount = '';
+      }
+      
+      // Clear conditional notes when switching types
+      if (value !== 'pre_order') {
+        updatedForm.pre_order_note = '';
+      }
+      if (value !== 'custom_price') {
+        updatedForm.custom_price_note = '';
+      }
+      
+      setForm(updatedForm);
+      console.log("Availability type changed to:", value, updatedForm);
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   function openModal(product?: Product) {
@@ -249,7 +271,11 @@ export default function AdminProductsPage() {
       return;
     }
 
-    if (form.availability_type !== 'custom_price' && (!form.amount || parseFloat(form.amount) <= 0)) {
+    // For custom pricing, skip amount validation but ensure other fields are valid
+    if (form.availability_type === 'custom_price') {
+      // Custom price validation - amount is optional
+      console.log("Custom price validation - skipping amount check");
+    } else if (!form.amount || parseFloat(form.amount) <= 0) {
       setError("Please enter a valid price.");
       return;
     }
@@ -259,9 +285,17 @@ export default function AdminProductsPage() {
       return;
     }
 
+    // Debug logging for mobile
+    console.log("Form submission data:", {
+      availability_type: form.availability_type,
+      amount: form.amount,
+      custom_price_note: form.custom_price_note,
+      pre_order_note: form.pre_order_note
+    });
+
     const payload = {
       ...form,
-      amount: form.availability_type === 'custom_price' ? 0 : parseFloat(form.amount),
+      amount: form.availability_type === 'custom_price' ? 0 : (parseFloat(form.amount) || 0),
       minimum_order: Number(form.minimum_order),
     };
 
@@ -647,7 +681,7 @@ export default function AdminProductsPage() {
 
                 {/* Conditional fields based on availability type */}
                 {form.availability_type === 'pre_order' && (
-                  <div>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Pre-Order Note
                     </label>
@@ -659,11 +693,12 @@ export default function AdminProductsPage() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       placeholder="e.g., Available for pre-order, ships in 2-3 weeks"
                     />
+                    <p className="text-xs text-blue-600 mt-1">This note will be shown to customers for pre-order items.</p>
                   </div>
                 )}
 
                 {form.availability_type === 'custom_price' && (
-                  <div>
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Custom Price Note
                     </label>
@@ -675,6 +710,7 @@ export default function AdminProductsPage() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       placeholder="e.g., Price varies based on quantity and specifications"
                     />
+                    <p className="text-xs text-yellow-600 mt-1">Customers will need to contact you for pricing information.</p>
                   </div>
                 )}
 
