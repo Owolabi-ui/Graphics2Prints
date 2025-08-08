@@ -41,9 +41,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Log the request for debugging mobile issues
-    console.log('Creating product with availability_type:', availability_type, 'amount:', amount)
-
     const newProduct = await prisma.product.create({
       data: {
         name,
@@ -82,9 +79,6 @@ export async function PUT(request: Request) {
     if (!id || !name || (!isCustomPrice && !amount) || !minimum_order || !category || !delivery_time || !finishing_options || !material || !specifications || !image_alt_text) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
     }
-
-    // Log the request for debugging mobile issues
-    console.log('Updating product with availability_type:', availability_type, 'amount:', amount)
 
     const updatedProduct = await prisma.product.update({
       where: { id },

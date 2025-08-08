@@ -196,7 +196,6 @@ export default function AdminProductsPage() {
       }
       
       setForm(updatedForm);
-      console.log("Availability type changed to:", value, updatedForm);
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -274,7 +273,6 @@ export default function AdminProductsPage() {
     // For custom pricing, skip amount validation but ensure other fields are valid
     if (form.availability_type === 'custom_price') {
       // Custom price validation - amount is optional
-      console.log("Custom price validation - skipping amount check");
     } else if (!form.amount || parseFloat(form.amount) <= 0) {
       setError("Please enter a valid price.");
       return;
@@ -284,14 +282,6 @@ export default function AdminProductsPage() {
       setError("Please upload an image.");
       return;
     }
-
-    // Debug logging for mobile
-    console.log("Form submission data:", {
-      availability_type: form.availability_type,
-      amount: form.amount,
-      custom_price_note: form.custom_price_note,
-      pre_order_note: form.pre_order_note
-    });
 
     const payload = {
       ...form,
