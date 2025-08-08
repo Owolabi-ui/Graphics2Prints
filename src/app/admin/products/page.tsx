@@ -91,7 +91,8 @@ export default function AdminProductsPage() {
             maxFileSize: 10000000, // 10MB
             cropping: true,
             showAdvancedOptions: false,
-            sources: ['local', 'url'],
+            sources: ['local', 'url', 'camera'],
+            theme: 'minimal',
             styles: {
               palette: {
                 window: '#FFFFFF',
@@ -108,6 +109,10 @@ export default function AdminProductsPage() {
                 complete: '#20B832',
                 sourceBg: '#E4EBF1'
               }
+            },
+            preBatch: (cb: any, data: any) => {
+              setUploading(true);
+              cb(data);
             }
           },
           (error: any, result: any) => {
@@ -216,14 +221,25 @@ export default function AdminProductsPage() {
   function openCloudinaryWidget() {
     if (widgetRef.current) {
       setUploading(true);
-      widgetRef.current.open();
+      setError("");
+      try {
+        widgetRef.current.open();
+      } catch (error) {
+        console.error("Cloudinary widget error:", error);
+        setUploading(false);
+        setError('Failed to open image uploader. Please try again.');
+      }
     } else {
-      setError('Cloudinary widget not loaded. Please refresh the page.');
+      setError('Image uploader not ready. Please refresh the page and try again.');
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    
+    // Prevent double submission
+    if (loading) return;
+    
     setError("");
     setSuccess("");
 
@@ -251,11 +267,25 @@ export default function AdminProductsPage() {
 
     try {
       setLoading(true);
+      setError("");
+      
+      // Add timeout for mobile networks
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const res = await fetch("/api/products", {
         method: isEditing ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
       if (data.success) {
         fetchProducts();
@@ -265,8 +295,15 @@ export default function AdminProductsPage() {
       } else {
         setError(data.error || "Failed to save product");
       }
-    } catch (err) {
-      setError("Error saving product");
+    } catch (err: any) {
+      console.error("Product save error:", err);
+      if (err.name === 'AbortError') {
+        setError("Request timed out. Please check your connection and try again.");
+      } else if (err.message?.includes('fetch')) {
+        setError("Network error. Please check your internet connection.");
+      } else {
+        setError(err.message || "Error saving product");
+      }
     } finally {
       setLoading(false);
     }

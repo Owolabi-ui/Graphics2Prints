@@ -243,12 +243,12 @@ export default function GiftItems() {
               </button>
 
               <div className="mt-6 sm:mt-8">
-                <div className="relative w-80 mx-auto sm:w-full sm:h-80 mb-6 rounded-lg overflow-hidden shadow-lg bg-gray-50 dark:bg-gray-800">
+                <div className="relative w-80 mx-auto sm:w-full mb-6 rounded-lg overflow-hidden shadow-lg bg-gray-50 dark:bg-gray-800">
                   {selectedProduct.image_url ? (
                     <CloudinaryImage
                       publicId={getImageFilenameFromUrl(selectedProduct.image_url)}
                       alt={selectedProduct.image_alt_text || selectedProduct.name}
-                      className="w-full min-h-96 object-contain sm:w-full sm:h-full sm:object-contain"
+                      className="w-full min-h-96 object-contain sm:w-full sm:h-auto sm:object-contain"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
