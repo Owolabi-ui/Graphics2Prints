@@ -109,45 +109,63 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const orderId = searchParams.get("orderId");
-    const customerId = searchParams.get("customerId");
-    const status = searchParams.get("status");
-
-    let query = `
-      SELECT 
-        du.*,
-        c.name as customer_name,
-        c.email as customer_email
-      FROM design_uploads du
-      LEFT JOIN customers c ON du.customer_id = c.customer_id
-      WHERE 1=1
-    `;
-    
-    const params: any[] = [];
-    let paramIndex = 1;
-
-    if (orderId) {
-      query += ` AND du.order_reference = $${paramIndex}`;
-      params.push(orderId);
-      paramIndex++;
-    }
-
-    if (customerId) {
-      query += ` AND du.customer_id = $${paramIndex}`;
-      params.push(parseInt(customerId));
-      paramIndex++;
-    }
-
-    if (status) {
-      query += ` AND du.upload_status = $${paramIndex}`;
-      params.push(status);
-      paramIndex++;
-    }
-
-    query += ` ORDER BY du.created_at DESC`;
+    const customerId = searchParams.get('customerId');
+    const orderId = searchParams.get('orderId');
+    const status = searchParams.get('status');
 
     const client = await pool.connect();
     try {
+      // First, ensure the table exists
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS design_uploads (
+          id SERIAL PRIMARY KEY,
+          order_reference VARCHAR(255),
+          customer_id INTEGER,
+          file_name VARCHAR(255) NOT NULL,
+          cloudinary_url TEXT NOT NULL,
+          cloudinary_public_id VARCHAR(255) NOT NULL,
+          file_type VARCHAR(50) NOT NULL,
+          file_size INTEGER NOT NULL,
+          upload_status VARCHAR(20) DEFAULT 'pending',
+          admin_notes TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      // Build query with optional filters
+      let query = `
+        SELECT 
+          id, order_reference, customer_id, file_name, cloudinary_url, 
+          cloudinary_public_id, file_type, file_size, upload_status, 
+          admin_notes, created_at, updated_at
+        FROM design_uploads
+        WHERE 1=1
+      `;
+      
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (orderId) {
+        query += ` AND order_reference = $${paramIndex}`;
+        params.push(orderId);
+        paramIndex++;
+      }
+
+      if (customerId) {
+        query += ` AND customer_id = $${paramIndex}`;
+        params.push(parseInt(customerId));
+        paramIndex++;
+      }
+
+      if (status) {
+        query += ` AND upload_status = $${paramIndex}`;
+        params.push(status);
+        paramIndex++;
+      }
+
+      query += ` ORDER BY created_at DESC`;
+
       const result = await client.query(query, params);
       
       const uploads = result.rows.map(row => ({
@@ -162,16 +180,13 @@ export async function GET(request: NextRequest) {
         upload_status: row.upload_status,
         admin_notes: row.admin_notes,
         created_at: row.created_at,
-        updated_at: row.updated_at,
-        customer: row.customer_name ? {
-          name: row.customer_name,
-          email: row.customer_email
-        } : null
+        updated_at: row.updated_at
       }));
 
       return NextResponse.json({
         success: true,
-        data: uploads
+        data: uploads,
+        message: `Found ${uploads.length} uploads. Table ready.`
       });
     } finally {
       client.release();
