@@ -4,10 +4,13 @@ import AuthGuard from "@/components/auth/AuthGuard"
 import { useRouter } from "next/navigation"
 import PageTransition from "@/components/PageTransition/PageTransition"
 import { motion } from "framer-motion"
+import { useState } from "react"
+import MyUploads from "@/components/MyUploads"
 
 
  export default function Page() {
     const router = useRouter()  
+    const [activeTab, setActiveTab] = useState('overview')
 
   return (
     <AuthGuard>
@@ -25,29 +28,55 @@ import { motion } from "framer-motion"
               Welcome, {session?.user?.name}!
             </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Recent Orders */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-gray-50 p-6 rounded-lg"
+            {/* Tab Navigation */}
+            <div className="flex space-x-4 mb-6 border-b">
+              <button
+                onClick={() => setActiveTab('overview')}
+                className={`pb-2 px-1 text-sm font-medium border-b-2 ${
+                  activeTab === 'overview'
+                    ? 'border-black text-black'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
               >
-                <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
-                {/* Add your orders content here */}
-                <p className="text-gray-600">No recent orders</p>
-              </motion.div>
+                Overview
+              </button>
+              <button
+                onClick={() => setActiveTab('uploads')}
+                className={`pb-2 px-1 text-sm font-medium border-b-2 ${
+                  activeTab === 'uploads'
+                    ? 'border-black text-black'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                My Design Uploads
+              </button>
+            </div>
 
-              {/* Account Details */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-gray-50 p-6 rounded-lg"
-              >
-                <h2 className="text-xl font-semibold mb-4">Account Details</h2>
-                <div className="space-y-2">
-                  <p><span className="font-medium">Email:</span> {session?.user?.email}</p>
+            {/* Tab Content */}
+            {activeTab === 'overview' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Recent Orders */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-gray-50 p-6 rounded-lg"
+                >
+                  <h2 className="text-xl font-semibold mb-4">Recent Orders</h2>
+                  {/* Add your orders content here */}
+                  <p className="text-gray-600">No recent orders</p>
+                </motion.div>
+
+                {/* Account Details */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="bg-gray-50 p-6 rounded-lg"
+                >
+                  <h2 className="text-xl font-semibold mb-4">Account Details</h2>
+                  <div className="space-y-2">
+                    <p><span className="font-medium">Email:</span> {session?.user?.email}</p>
                   {/* Add more account details here */}
                 </div>
               </motion.div>
@@ -76,6 +105,14 @@ import { motion } from "framer-motion"
                 </div>
               </motion.div>
             </div>
+            )}
+
+            {/* Design Uploads Tab */}
+            {activeTab === 'uploads' && (
+              <div>
+                <MyUploads />
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
@@ -83,8 +120,6 @@ import { motion } from "framer-motion"
       )}
      </AuthGuard>
       )
-  
-  
 }
 
 

@@ -9,6 +9,7 @@ import { Product } from "@/types/cart";
 import Image from "next/image";
 import CloudinaryImage from "@/components/ui/CloudinaryImage";
 import { getImageFilenameFromUrl } from "@/utils/cloudinary";
+import { getProductPriceDisplay, getAvailabilityBadgeColor } from "@/utils/productDisplay";
 
 export default function GiftItems() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -116,50 +117,73 @@ export default function GiftItems() {
 
         {/* Products Grid */}
         <div className="dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 p-8">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
-            >
-              <div className="relative w-full h-80">
-                {product.image_url ? (
-                  <CloudinaryImage
-                    publicId={getImageFilenameFromUrl(product.image_url)}
-                    alt={product.image_alt_text || product.name}
-                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-                    width={400}
-                    height={320}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">No Image</span>
+          {filteredProducts.map((product) => {
+            const priceDisplay = getProductPriceDisplay(product);
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
+              >
+                <div className="relative w-full h-80">
+                  {/* Availability Badge */}
+                  <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border z-10 ${getAvailabilityBadgeColor(product.availability_type)}`}>
+                    {priceDisplay.availabilityText}
                   </div>
-                )}
+                  {product.image_url ? (
+                    <CloudinaryImage
+                      publicId={getImageFilenameFromUrl(product.image_url)}
+                      alt={product.image_alt_text || product.name}
+                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                      width={400}
+                      height={320}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500 text-sm">No Image</span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
+                  
+                  {/* Price Display */}
+                  <div className="mb-3">
+                    <div className="text-[#FF0000] font-bold text-sm md:text-lg">
+                      {priceDisplay.priceText}
+                      {priceDisplay.priceValue && (
+                        <span className="text-gray-500 text-xs ml-1">per piece</span>
+                      )}
+                    </div>
+                    {priceDisplay.priceNote && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {priceDisplay.priceNote}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setQuantity(product.minimum_order);
+                      const pricePerPiece =
+                        product.amount / product.minimum_order;
+                      setCalculatedPrice(product.amount);
+                      setPricePerPiece(pricePerPiece);
+                      setIsSidebarOpen(true);
+                    }}
+                    className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
+                  >
+                    See More
+                  </button>
+                </div>
               </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                  {product.description}
-                </p>
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setQuantity(product.minimum_order);
-                    const pricePerPiece =
-                      product.amount / product.minimum_order;
-                    setCalculatedPrice(product.amount);
-                    setPricePerPiece(pricePerPiece);
-                    setIsSidebarOpen(true);
-                  }}
-                  className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
-                >
-                  See More
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Show message if no results */}
@@ -256,12 +280,35 @@ export default function GiftItems() {
                     </div>
                   )}
                 </div>
+
+                {/* Availability Badge */}
+                {(() => {
+                  const priceDisplay = getProductPriceDisplay(selectedProduct);
+                  return (
+                    <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium border mb-4 ${getAvailabilityBadgeColor(selectedProduct.availability_type)}`}>
+                      {priceDisplay.availabilityText}
+                    </div>
+                  );
+                })()}
+
                 <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                   {selectedProduct.name}
                 </h2>
                 <p className="mt-4 text-gray-600 text-lg leading-relaxed">
                   {selectedProduct.description}
                 </p>
+
+                {/* Special Note for Pre-order or Custom Price */}
+                {(() => {
+                  const priceDisplay = getProductPriceDisplay(selectedProduct);
+                  return priceDisplay.priceNote ? (
+                    <div className={`p-3 rounded-lg mb-4 ${selectedProduct.availability_type === 'pre_order' ? 'bg-blue-50 border border-blue-200' : 'bg-yellow-50 border border-yellow-200'}`}>
+                      <p className={`text-sm ${selectedProduct.availability_type === 'pre_order' ? 'text-blue-800' : 'text-yellow-800'}`}>
+                        <strong>Note:</strong> {priceDisplay.priceNote}
+                      </p>
+                    </div>
+                  ) : null;
+                })()}
 
                 <div className="mt-8 space-y-6">
                   <div className="space-y-4">
@@ -300,99 +347,119 @@ export default function GiftItems() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 mt-8">
-                    {/* Quantity Selector */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <label
-                        htmlFor="quantity"
-                        className="text-gray-700 dark:text-gray-300"
-                      >
-                        Quantity:
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (quantity > selectedProduct.minimum_order) {
-                            setQuantity(
-                              quantity - selectedProduct.minimum_order
-                            );
-                            setCalculatedPrice(
-                              pricePerPiece *
-                                (quantity - selectedProduct.minimum_order)
-                            );
-                          }
-                        }}
-                        className="px-3 py-1 bg-gray-200 rounded-l hover:bg-gray-300 transition"
-                        disabled={quantity <= selectedProduct.minimum_order}
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </button>
-                      <input
-                        type="number"
-                        id="quantity"
-                        min={selectedProduct.minimum_order}
-                        step={selectedProduct.minimum_order}
-                        value={quantity || ""}
-                        onChange={(e) => {
-                          let val = parseInt(e.target.value) || selectedProduct.minimum_order;
-                          if (val < selectedProduct.minimum_order)
-                            val = selectedProduct.minimum_order;
-                          setQuantity(val);
-                          setCalculatedPrice(pricePerPiece * val);
-                        }}
-                        className="w-20 px-2 py-1 border-t border-b border-gray-300 text-center focus:ring-2 focus:ring-[#FF0000]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setQuantity(quantity + selectedProduct.minimum_order);
-                          setCalculatedPrice(
-                            pricePerPiece *
-                              (quantity + selectedProduct.minimum_order)
-                          );
-                        }}
-                        className="px-3 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
                   <div className="mt-8 space-y-6">
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-xl font-semibold mb-4">Pricing</h3>
-                      <p className="text-3xl font-bold text-gray-900">
-                        ₦
-                        {formatPrice(
-                          quantity > selectedProduct.minimum_order
-                            ? calculatedPrice
-                            : selectedProduct.amount
-                        )}
-                      </p>
-                      <p className="text-gray-600 mt-2">
-                        Minimum order: {selectedProduct.minimum_order} pieces
-                      </p>
-                    </div>
-                  </div>
+                    {selectedProduct.availability_type === 'custom_price' ? (
+                      // Custom Price - Contact for Quote
+                      <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="text-center">
+                          <h3 className="text-lg font-bold text-yellow-800 mb-2">Custom Pricing</h3>
+                          <p className="text-yellow-700 mb-4">Contact us for a personalized quote based on your specific requirements.</p>
+                        </div>
+                      </div>
+                    ) : (
+                      // Regular Pricing with Quantity Selector
+                      <div className="flex gap-4 mt-8">
+                        {/* Quantity Selector */}
+                        <div className="flex items-center gap-2 mb-4">
+                          <label
+                            htmlFor="quantity"
+                            className="text-gray-700 dark:text-gray-300"
+                          >
+                            Quantity:
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (quantity > selectedProduct.minimum_order) {
+                                setQuantity(
+                                  quantity - selectedProduct.minimum_order
+                                );
+                                setCalculatedPrice(
+                                  pricePerPiece *
+                                    (quantity - selectedProduct.minimum_order)
+                                );
+                              }
+                            }}
+                            className="px-3 py-1 bg-gray-200 rounded-l hover:bg-gray-300 transition"
+                            disabled={quantity <= selectedProduct.minimum_order}
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <input
+                            type="number"
+                            id="quantity"
+                            min={selectedProduct.minimum_order}
+                            step={selectedProduct.minimum_order}
+                            value={quantity || ""}
+                            onChange={(e) => {
+                              let val = parseInt(e.target.value) || selectedProduct.minimum_order;
+                              if (val < selectedProduct.minimum_order)
+                                val = selectedProduct.minimum_order;
+                              setQuantity(val);
+                              setCalculatedPrice(pricePerPiece * val);
+                            }}
+                            className="w-20 px-2 py-1 border-t border-b border-gray-300 text-center focus:ring-2 focus:ring-[#FF0000]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuantity(quantity + selectedProduct.minimum_order);
+                              setCalculatedPrice(
+                                pricePerPiece *
+                                  (quantity + selectedProduct.minimum_order)
+                              );
+                            }}
+                            className="px-3 py-1 bg-gray-200 rounded-r hover:bg-gray-300 transition"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
-                  <div className="flex gap-4">
-                    <a
-                      href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#FF0000] transition-colors"
-                    >
-                      Order via WhatsApp
-                    </a>
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex items-center justify-center gap-2 flex-1 bg-[#FF0000] text-white py-4 rounded-lg hover:bg-black transition-colors"
-                    >
-                      <ShoppingCartIcon className="w-5 h-5" />
-                      Add to Cart
-                    </button>
+                    <div className="mt-8 space-y-6">
+                      {selectedProduct.availability_type !== 'custom_price' && (
+                        <div className="bg-gray-50 p-6 rounded-lg">
+                          <h3 className="text-xl font-semibold mb-4">Pricing</h3>
+                          <p className="text-3xl font-bold text-gray-900">
+                            ₦
+                            {formatPrice(
+                              quantity > selectedProduct.minimum_order
+                                ? calculatedPrice
+                                : selectedProduct.amount
+                            )}
+                          </p>
+                          <p className="text-gray-600 mt-2">
+                            Minimum order: {selectedProduct.minimum_order} pieces
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-4">
+                      <a
+                        href={`https://wa.me/+2348166411702?text=I'm%20interested%20in%20${selectedProduct.name}${selectedProduct.availability_type === 'custom_price' ? '%20-%20Please%20provide%20a%20quote' : ''}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 bg-black text-white text-center py-4 rounded-lg hover:bg-[#FF0000] transition-colors"
+                      >
+                        {selectedProduct.availability_type === 'custom_price' ? 'Get Quote via WhatsApp' : 'Order via WhatsApp'}
+                      </a>
+                      {(() => {
+                        const priceDisplay = getProductPriceDisplay(selectedProduct);
+                        return priceDisplay.showAddToCart ? (
+                          <button
+                            onClick={handleAddToCart}
+                            className="flex items-center justify-center gap-2 flex-1 bg-[#FF0000] text-white py-4 rounded-lg hover:bg-black transition-colors"
+                          >
+                            <ShoppingCartIcon className="w-5 h-5" />
+                            Add to Cart
+                          </button>
+                        ) : null;
+                      })()}
+                    </div>
                   </div>
                 </div>
               </div>

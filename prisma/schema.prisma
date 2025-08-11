@@ -41,6 +41,7 @@ model Customer {
   updated_at     DateTime  @updatedAt
   addresses      Address[]
   orders         Order[]
+  design_uploads DesignUpload[]
 
   @@map("customers")
 }
@@ -144,4 +145,23 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model DesignUpload {
+  id                Int      @id @default(autoincrement())
+  order_reference   String?  // Payment reference or order ID
+  customer_id       Int?     // Customer who uploaded
+  file_name         String   // Original file name
+  cloudinary_url    String   // Full Cloudinary URL
+  cloudinary_public_id String @unique // Cloudinary public ID for management
+  file_type         String   // MIME type of the file
+  file_size         Int      // File size in bytes
+  upload_status     String   @default("pending") // pending, reviewed, approved, rejected
+  admin_notes       String?  // Notes from admin review
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  customer          Customer? @relation(fields: [customer_id], references: [customer_id])
+
+  @@map("design_uploads")
 }

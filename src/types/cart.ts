@@ -11,6 +11,10 @@ export interface BaseProduct {
     image_alt_text: string
     material: string
     specifications: string
+    availability_type?: string // "in_stock", "pre_order", "custom_price"
+    is_available?: boolean
+    custom_price_note?: string
+    pre_order_note?: string
   }
   
   export interface Product extends BaseProduct {
