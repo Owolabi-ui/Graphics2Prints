@@ -207,7 +207,7 @@ export default function Prints() {
                       key={product.id}
                       className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[350px] md:h-[500px] flex flex-col mb-4"
                     >
-                      <div className="relative w-full h-48 md:h-80">
+                      <div className="relative w-full h-48 md:h-80 flex-shrink-0">
                         {product.image_url ? (
                           <CloudinaryImage
                             publicId={getImageFilenameFromUrl(product.image_url)}
@@ -225,14 +225,34 @@ export default function Prints() {
                             sizes="(max-width: 768px) 100vw, 400px"
                           />
                         )}
+                        
+                        {/* Availability Badge */}
+                        <div className="absolute top-2 right-2">
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getAvailabilityBadgeColor(product.availability_type || 'in_stock')}`}>
+                            {product.availability_type === 'pre_order' ? 'Pre-Order' : 
+                             product.availability_type === 'custom_price' ? 'Custom Price' : 'In Stock'}
+                          </span>
+                        </div>
                       </div>
+                      
                       <div className="p-3 md:p-6 flex flex-col flex-grow">
                         <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2 flex-grow">
                           {product.description}
                         </p>
+                        
+                        {/* Price Display */}
+                        <div className="mb-3">
+                          <span className="text-lg font-bold text-black dark:text-white">
+                            {getProductPriceDisplay(product).priceText}
+                          </span>
+                          {product.minimum_order > 1 && (
+                            <p className="text-xs text-gray-500">Minimum order: {product.minimum_order}</p>
+                          )}
+                        </div>
+                        
                         <button
                           onClick={() => {
                             setSelectedProduct(product);
@@ -242,7 +262,7 @@ export default function Prints() {
                             setCalculatedPrice(product.amount);
                             setIsSidebarOpen(true);
                           }}
-                          className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm"
+                          className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm flex-shrink-0"
                         >
                           See More
                         </button>
@@ -267,7 +287,7 @@ export default function Prints() {
                         key={product.id}
                         className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[350px] md:h-[500px] flex flex-col mb-4"
                       >
-                        <div className="relative w-full h-48 md:h-80">
+                        <div className="relative w-full h-48 md:h-80 flex-shrink-0">
                           {/* Availability Badge */}
                           <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border z-10 ${getAvailabilityBadgeColor(product.availability_type)}`}>
                             {priceDisplay.availabilityText}
@@ -294,7 +314,7 @@ export default function Prints() {
                           <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
                             {product.name}
                           </h3>
-                          <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2">
+                          <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2 flex-grow">
                             {product.description}
                           </p>
                           
@@ -322,7 +342,7 @@ export default function Prints() {
                               setCalculatedPrice(product.amount);
                               setIsSidebarOpen(true);
                             }}
-                            className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm"
+                            className="w-full bg-black hover:bg-red-600 dark:bg-gray-800 dark:hover:bg-red-600 text-white px-4 py-2 rounded transition-colors mt-auto text-xs md:text-sm flex-shrink-0"
                           >
                             See More
                           </button>

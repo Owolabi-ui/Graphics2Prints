@@ -221,6 +221,13 @@ export default function Cart() {
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 Total: ₦{formatPrice(total)}
               </p>
+              {!session && (
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-blue-800 dark:text-blue-200 text-sm">
+                    <strong>Please log in to proceed with checkout.</strong> We need your account information to process your order and send you updates.
+                  </p>
+                </div>
+              )}
               <button
                 onClick={handleCheckout}
                 disabled={isLoading}
@@ -230,7 +237,7 @@ export default function Cart() {
                     : "bg-black hover:bg-[#FF0000]"
                 } text-white`}
               >
-                {isLoading ? "Processing..." : "Proceed to Checkout"}
+                {isLoading ? "Processing..." : session ? "Proceed to Checkout" : "Login to Checkout"}
               </button>
             </div>
           </>

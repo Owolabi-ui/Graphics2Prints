@@ -4,26 +4,32 @@ import PageTransition from "@/components/PageTransition/PageTransition"
 import { toast } from "react-toastify"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function Login() { 
+function LoginContent() { 
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
+  
+  const redirectUrl = searchParams.get('redirect');
 
-   // Redirect after login based on role
+   // Redirect after login based on role or redirect parameter
   useEffect(() => {
     if (status === "authenticated") {
-      if (session?.user?.role === "admin") {
+      if (redirectUrl) {
+        // If there's a redirect URL, use it
+        router.replace(redirectUrl);
+      } else if (session?.user?.role === "admin") {
         router.replace("/admin");
       } else {
         router.replace("/dashboard");
       }
     }
-  }, [session, status, router]);
+  }, [session, status, router, redirectUrl]);
 
  const handleGoogleSignIn = async () => {
     try {
@@ -74,6 +80,13 @@ export default function Login() {
             <h2 className="mt-6 text-center text-4xl font-bold text-gray-900">
               Welcome Back!!!
             </h2>
+            {redirectUrl && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800 text-sm text-center">
+                  Please log in to continue with your checkout.
+                </p>
+              </div>
+            )}
             <p className="mt-2 text-center text-sm text-gray-600">
               Don&apos;t have an account?{" "}
               <Link 
@@ -163,5 +176,13 @@ export default function Login() {
         </motion.div>
       </div>
     </PageTransition>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }
