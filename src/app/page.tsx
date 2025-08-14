@@ -597,7 +597,7 @@ export default function Home() {
                         whileHover={{ y: -10 }}
                         className="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 h-[480px] flex flex-col border border-gray-100"
                       >
-                        <div className="relative w-full h-64 overflow-hidden">
+                        <div className="relative w-full h-64 overflow-hidden flex-shrink-0">
                           {product.image_url ? (
                             <Image
                               src={product.image_url}
@@ -626,7 +626,7 @@ export default function Home() {
                             {product.description}
                           </p>
                           
-                          <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center justify-between mb-4 flex-shrink-0">
                             <div className="flex items-center gap-1">
                               {[...Array(5)].map((_, i) => (
                                 <StarSolidIcon key={i} className="w-4 h-4 text-yellow-400" />
@@ -649,7 +649,7 @@ export default function Home() {
                               setCalculatedPrice(product.amount);
                               setIsSidebarOpen(true);
                             }}
-                            className="w-full btn-primary text-center"
+                            className="w-full btn-primary text-center flex-shrink-0"
                           >
                             View Details
                           </motion.button>

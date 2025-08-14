@@ -124,7 +124,7 @@ export default function GiftItems() {
                 key={product.id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
               >
-                <div className="relative w-full h-80">
+                <div className="relative w-full h-80 flex-shrink-0">
                   {/* Availability Badge */}
                   <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border z-10 ${getAvailabilityBadgeColor(product.availability_type)}`}>
                     {priceDisplay.availabilityText}
@@ -147,7 +147,7 @@ export default function GiftItems() {
                   <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow">
                     {product.description}
                   </p>
                   
@@ -176,7 +176,7 @@ export default function GiftItems() {
                       setPricePerPiece(pricePerPiece);
                       setIsSidebarOpen(true);
                     }}
-                    className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto"
+                    className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto flex-shrink-0"
                   >
                     See More
                   </button>
