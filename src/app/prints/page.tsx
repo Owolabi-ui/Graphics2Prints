@@ -239,7 +239,7 @@ export default function Prints() {
                         <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2 flex-grow">
+                        <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-1 flex-grow">
                           {product.description}
                         </p>
                         
@@ -314,7 +314,7 @@ export default function Prints() {
                           <h3 className="font-semibold text-sm md:text-lg mb-2 text-black dark:text-white line-clamp-1">
                             {product.name}
                           </h3>
-                          <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-2 flex-grow">
+                          <p className="text-gray-600 dark:text-gray-300 text-xs md:text-sm mb-3 line-clamp-1 flex-grow">
                             {product.description}
                           </p>
                           
@@ -327,7 +327,7 @@ export default function Prints() {
                               )}
                             </div>
                             {priceDisplay.priceNote && (
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                                 {priceDisplay.priceNote}
                               </p>
                             )}

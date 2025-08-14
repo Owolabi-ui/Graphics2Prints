@@ -622,7 +622,7 @@ export default function Home() {
                           <h3 className="font-bold text-lg mb-2 text-gray-900 line-clamp-1">
                             {product.name}
                           </h3>
-                          <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-1 flex-grow">
                             {product.description}
                           </p>
                           

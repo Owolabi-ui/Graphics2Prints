@@ -147,7 +147,7 @@ export default function GiftItems() {
                   <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow">
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-1 flex-grow">
                     {product.description}
                   </p>
                   
@@ -160,7 +160,7 @@ export default function GiftItems() {
                       )}
                     </div>
                     {priceDisplay.priceNote && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                         {priceDisplay.priceNote}
                       </p>
                     )}
