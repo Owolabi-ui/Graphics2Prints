@@ -244,7 +244,7 @@ export default function Prints() {
                         </p>
                         
                         {/* Price Display */}
-                        <div className="mb-3">
+                        <div className="mb-3 flex-shrink-0">
                           <span className="text-lg font-bold text-black dark:text-white">
                             {getProductPriceDisplay(product).priceText}
                           </span>
@@ -319,7 +319,7 @@ export default function Prints() {
                           </p>
                           
                           {/* Price Display */}
-                          <div className="mb-3">
+                          <div className="mb-3 flex-shrink-0">
                             <div className="text-[#FF0000] font-bold text-sm md:text-lg">
                               {priceDisplay.priceText}
                               {priceDisplay.priceValue && (
