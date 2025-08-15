@@ -122,9 +122,9 @@ export default function GiftItems() {
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[500px] flex flex-col mb-4"
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow h-[400px] md:h-[500px] flex flex-col mb-4"
               >
-                <div className="relative w-full h-80 flex-shrink-0">
+                <div className="relative w-full h-48 md:h-64 flex-shrink-0">
                   {/* Availability Badge */}
                   <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border z-10 ${getAvailabilityBadgeColor(product.availability_type)}`}>
                     {priceDisplay.availabilityText}
@@ -143,16 +143,16 @@ export default function GiftItems() {
                     </div>
                   )}
                 </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-semibold text-lg mb-2 text-black line-clamp-1">
+                <div className="p-3 md:p-4 flex flex-col flex-grow">
+                  <h3 className="font-semibold text-sm md:text-lg mb-2 text-black line-clamp-1 flex-shrink-0">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-1 flex-grow">
+                  <p className="text-gray-600 text-xs md:text-sm mb-3 line-clamp-1 flex-grow">
                     {product.description}
                   </p>
                   
                   {/* Price Display */}
-                  <div className="mb-3 flex-shrink-0">
+                  <div className="mb-2 flex-shrink-0">
                     <div className="text-[#FF0000] font-bold text-sm md:text-lg">
                       {priceDisplay.priceText}
                       {priceDisplay.priceValue && (
@@ -160,7 +160,7 @@ export default function GiftItems() {
                       )}
                     </div>
                     {priceDisplay.priceNote && (
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">
                         {priceDisplay.priceNote}
                       </p>
                     )}
@@ -176,7 +176,7 @@ export default function GiftItems() {
                       setPricePerPiece(pricePerPiece);
                       setIsSidebarOpen(true);
                     }}
-                    className="w-full bg-black text-white px-4 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto flex-shrink-0"
+                    className="w-full bg-black text-white px-3 py-2 rounded hover:bg-[#FF0000] transition-colors mt-auto flex-shrink-0 text-xs md:text-sm"
                   >
                     See More
                   </button>
